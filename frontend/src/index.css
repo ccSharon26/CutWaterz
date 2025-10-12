@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* GLOBAL BODY STYLES */
+html, body {
+  height: 100%;
+  overflow-x: hidden;
+  overscroll-behavior: none; 
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-[#0f0f0f] text-gray-100 transition-all duration-300;
+}
