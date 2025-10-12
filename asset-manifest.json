@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/CutWaterz/static/css/main.ca0d36f7.css",
+    "main.js": "/CutWaterz/static/js/main.507b5e4a.js",
+    "index.html": "/CutWaterz/index.html",
+    "main.ca0d36f7.css.map": "/CutWaterz/static/css/main.ca0d36f7.css.map",
+    "main.507b5e4a.js.map": "/CutWaterz/static/js/main.507b5e4a.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.ca0d36f7.css",
+    "static/js/main.507b5e4a.js"
+  ]
+}
