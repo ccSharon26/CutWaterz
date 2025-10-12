@@ -17,6 +17,19 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://ccsharon26.github.io", 
+      "https://ccsharon26.github.io/CutWaterz", 
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
+
+
 console.log("Server running with:", {
   env: process.env.NODE_ENV,
   dbUrl: DATABASE_URL,
