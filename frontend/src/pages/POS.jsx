@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchProducts, fetchSales } from "../api"; // we'll reuse fetchProducts
+import { fetchProducts } from "../api";
 
 export default function POS() {
   const [products, setProducts] = useState([]);
