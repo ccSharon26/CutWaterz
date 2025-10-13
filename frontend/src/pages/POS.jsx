@@ -54,44 +54,50 @@ export default function POS() {
     }
   };
 
-  const filteredProducts = products.filter((p) => p.name.toLowerCase().includes(search.toLowerCase()));
+  const filteredProducts = products.filter((p) =>
+    p.name.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
-    <div className="bg-[#0f0f0f] text-gray-100 min-h-screen p-6">
+    <div className="min-h-screen pt-20">
       <h2 className="text-2xl font-bold mb-6 text-amber-500">🍹 CutWaterz POS Terminal</h2>
 
-      <input
-        type="text"
-        placeholder="Search product..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="w-full p-3 rounded-lg bg-[#1a1a1a] border border-gray-700 text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500 mb-6"
-      />
+      <div className="mb-6">
+        <input
+          type="text"
+          placeholder="Search product..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full max-w-sm p-3 rounded-lg border border-gray-700 bg-gray-900/70 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500"
+        />
+      </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {filteredProducts.map((product) => (
           <button
             key={product.id}
             onClick={() => addToCart(product)}
-            className="bg-[#1a1a1a] hover:bg-amber-900/30 border border-gray-800 p-4 rounded-xl shadow-md transition flex flex-col justify-between"
+            className="bg-gray-900/70 hover:bg-amber-900/30 border border-gray-800 p-4 rounded-xl shadow-md transition flex flex-col justify-between"
           >
             <div>
               <p className="font-semibold text-gray-100">{product.name}</p>
               <p className="text-sm text-amber-400">Ksh {product.price}</p>
             </div>
-            <p className={`text-xs mt-2 ${product.stock > 0 ? "text-gray-400" : "text-red-500"}`}>Stock: {product.stock}</p>
+            <p className={`text-xs mt-2 ${product.stock > 0 ? "text-gray-400" : "text-red-500"}`}>
+              Stock: {product.stock}
+            </p>
           </button>
         ))}
       </div>
 
-      <div className="mt-8 bg-[#1a1a1a] p-4 rounded-lg shadow-md border border-gray-800">
+      <div className="mt-8 bg-gray-900/70 p-4 rounded-lg shadow-md border border-gray-800">
         <h3 className="text-xl font-semibold mb-4 text-amber-500">🧾 Cart</h3>
         {cart.length === 0 ? (
-          <p className="text-gray-500">No items in cart.</p>
+          <p className="text-gray-400">No items in cart.</p>
         ) : (
           <table className="w-full text-sm border-collapse border border-gray-700">
-            <thead>
-              <tr className="bg-amber-500 text-black">
+            <thead className="bg-amber-500 text-black">
+              <tr>
                 <th className="p-2 text-left">Product</th>
                 <th>Qty</th>
                 <th>Price</th>
@@ -108,7 +114,7 @@ export default function POS() {
                       min="1"
                       value={item.quantity}
                       onChange={(e) => updateQty(item.id, parseInt(e.target.value))}
-                      className="w-16 text-center p-1 border border-gray-600 bg-[#0f0f0f] text-gray-100 rounded"
+                      className="w-16 text-center p-1 border border-gray-600 bg-gray-900/70 text-gray-100 rounded"
                     />
                   </td>
                   <td>Ksh {item.price}</td>

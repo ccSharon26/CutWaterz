@@ -12,7 +12,7 @@ const AdminGate = ({ children }) => {
   const [password, setPassword] = useState("");
   const [isAuthorized, setIsAuthorized] = useState(false);
 
-  const correctPassword = "12345"; // change this as needed
+  const correctPassword = "12345"; // change as needed
 
   useEffect(() => {
     const auth = localStorage.getItem("isAdminAuthorized");
@@ -32,16 +32,16 @@ const AdminGate = ({ children }) => {
   };
 
   const handleLogout = () => {
-  localStorage.removeItem("isAdminAuthorized");
-  window.location.href = "/";
-};
+    localStorage.removeItem("isAdminAuthorized");
+    window.location.href = "/";
+  };
 
   if (!isAuthorized) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-black/90 z-50">
+      <div className="fixed inset-0 flex items-center justify-center bg-black/70 z-50">
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col bg-gray-800 border border-gray-700 p-6 rounded-lg shadow-lg w-80"
+          className="flex flex-col bg-gray-800/90 border border-gray-700 p-6 rounded-lg shadow-lg w-80"
         >
           <h2 className="text-amber-400 text-xl font-bold mb-4 text-center">
             Admin Login
@@ -51,7 +51,7 @@ const AdminGate = ({ children }) => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter password"
-            className="mb-4 p-2 rounded border border-gray-700 bg-[#0f0f0f] text-gray-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+            className="mb-4 p-2 rounded border border-gray-700 bg-gray-900/80 text-gray-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
           />
           <button
             type="submit"
@@ -69,7 +69,14 @@ const AdminGate = ({ children }) => {
 
 function App() {
   return (
-    <div className="bg-[#0f0f0f] text-gray-100 min-h-screen overflow-x-hidden">
+    <div
+      className="min-h-screen text-gray-100 overflow-x-hidden"
+      style={{
+        backgroundImage: `url(${process.env.PUBLIC_URL}/background.png)`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
       <Navbar />
 
       <main className="pt-16 px-6 pb-10">
@@ -77,8 +84,6 @@ function App() {
           <Route path="/" element={<POS />} />
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/dashboard" element={<Dashboard />} />
-
-          {/* Admin Route */}
           <Route
             path="/admin"
             element={

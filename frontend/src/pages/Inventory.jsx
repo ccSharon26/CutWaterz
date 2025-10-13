@@ -23,8 +23,8 @@ export default function Inventory() {
   );
 
   return (
-    <div className="bg-[#0f0f0f] text-gray-100 min-h-screen pt-20 px-6">
-      <h2 className="text-2xl font-bold text-amber-500 mb-6">📋 Inventory</h2>
+    <div className="min-h-screen pt-20">
+      <h2 className="text-2xl font-bold mb-6 text-amber-500">📋 Inventory</h2>
 
       <div className="mb-4 flex justify-between items-center">
         <input
@@ -32,11 +32,11 @@ export default function Inventory() {
           placeholder="Search liquor..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="p-2 w-full max-w-sm rounded bg-[#1a1a1a] border border-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-500"
+          className="p-2 w-full max-w-sm rounded bg-gray-900/70 border border-gray-700 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500"
         />
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-gray-800 shadow-lg">
+      <div className="overflow-x-auto rounded-lg border border-gray-800 shadow-md bg-gray-900/70">
         <table className="min-w-full text-sm">
           <thead className="bg-gray-800 text-amber-400">
             <tr>
@@ -51,8 +51,8 @@ export default function Inventory() {
                 <tr
                   key={p.id}
                   className={`border-t border-gray-700 ${
-                    idx % 2 === 0 ? "bg-gray-900" : "bg-gray-800/40"
-                  } hover:bg-gray-800/70 transition`}
+                    idx % 2 === 0 ? "bg-gray-900/70" : "bg-gray-800/50"
+                  } hover:bg-gray-800/60 transition`}
                 >
                   <td className="py-2 px-4">{p.name}</td>
                   <td className="py-2 px-4 text-amber-400 font-medium">{p.price}</td>
@@ -61,7 +61,7 @@ export default function Inventory() {
               ))
             ) : (
               <tr>
-                <td colSpan="3" className="py-3 text-center text-gray-500 italic">
+                <td colSpan="3" className="py-3 text-center text-gray-400 italic">
                   No products found
                 </td>
               </tr>

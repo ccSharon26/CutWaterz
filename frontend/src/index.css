@@ -11,5 +11,18 @@ html, body {
 }
 
 body {
-  @apply bg-[#0f0f0f] text-gray-100 transition-all duration-300;
+  /* Use your background image instead of solid dark */
+  background-image: url('/public/background.png');
+  background-size: cover;           /* cover the entire screen */
+  background-position: center;      /* center the image */
+  background-repeat: no-repeat;     /* prevent tiling */
+  background-attachment: fixed;     /* stays fixed on scroll */
+  
+  /* Keep text color and smooth transitions */
+  @apply text-gray-100 transition-all duration-300;
+}
+
+/* Optional: make main panels slightly translucent */
+.main-panel {
+  @apply bg-[#0f0f0f]/80 rounded-lg shadow-lg;
 }

@@ -4,7 +4,7 @@ export default function Navbar() {
   const location = useLocation();
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 py-3 bg-[#0f0f0f] text-gray-100 shadow-md border-b border-gray-800">
+    <nav className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 py-3 bg-gray-900/90 text-gray-100 shadow-md border-b border-gray-700 backdrop-blur-sm">
       <h1 className="text-xl font-bold text-amber-500 tracking-wide">
         CutWaterz 🍾
       </h1>
