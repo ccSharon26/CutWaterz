@@ -1,4 +1,8 @@
-const dev = "http://localhost:4000/api";
-const prod = "https://cutwaterz-production.up.railway.app/api";
+const CONFIG = {
+  BASE_URL:
+    process.env.NODE_ENV === "production"
+      ? "https://cutwaterz-production.up.railway.app"
+      : "http://localhost:4000",
+};
 
-export const API_BASE = process.env.NODE_ENV === "production" ? prod : dev;
+export default CONFIG;

@@ -18,7 +18,9 @@ export default function Inventory() {
     getProducts();
   }, []);
 
-  const filteredProducts = products.filter((p) => p.name.toLowerCase().includes(search.toLowerCase()));
+  const filteredProducts = products.filter((p) =>
+    p.name.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div className="bg-[#0f0f0f] text-gray-100 min-h-screen pt-20 px-6">
@@ -46,7 +48,12 @@ export default function Inventory() {
           <tbody>
             {filteredProducts.length > 0 ? (
               filteredProducts.map((p, idx) => (
-                <tr key={p.id} className={`border-t border-gray-700 ${idx % 2 === 0 ? "bg-gray-900" : "bg-gray-800/40"} hover:bg-gray-800/70 transition`}>
+                <tr
+                  key={p.id}
+                  className={`border-t border-gray-700 ${
+                    idx % 2 === 0 ? "bg-gray-900" : "bg-gray-800/40"
+                  } hover:bg-gray-800/70 transition`}
+                >
                   <td className="py-2 px-4">{p.name}</td>
                   <td className="py-2 px-4 text-amber-400 font-medium">{p.price}</td>
                   <td className="py-2 px-4">{p.stock}</td>
@@ -54,7 +61,9 @@ export default function Inventory() {
               ))
             ) : (
               <tr>
-                <td colSpan="3" className="py-3 text-center text-gray-500 italic">No products found</td>
+                <td colSpan="3" className="py-3 text-center text-gray-500 italic">
+                  No products found
+                </td>
               </tr>
             )}
           </tbody>

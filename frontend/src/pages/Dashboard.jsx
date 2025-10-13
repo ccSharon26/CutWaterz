@@ -26,7 +26,9 @@ export default function Dashboard() {
       let filtered = [];
 
       if (type === "today") {
-        filtered = sales.filter((s) => new Date(s.createdAt).toDateString() === now.toDateString());
+        filtered = sales.filter(
+          (s) => new Date(s.createdAt).toDateString() === now.toDateString()
+        );
       } else if (type === "week") {
         const weekAgo = new Date(now);
         weekAgo.setDate(now.getDate() - 7);
@@ -66,10 +68,14 @@ export default function Dashboard() {
 
       <div className="bg-gray-900 p-4 rounded-md mb-4 flex justify-between items-center">
         <p className="text-lg">
-          Total Sales: <span className="text-amber-400 font-semibold">{filteredSales.length}</span>
+          Total Sales:{" "}
+          <span className="text-amber-400 font-semibold">{filteredSales.length}</span>
         </p>
         <p className="text-lg">
-          Total Revenue: <span className="text-amber-400 font-semibold">Ksh {totalRevenue.toLocaleString()}</span>
+          Total Revenue:{" "}
+          <span className="text-amber-400 font-semibold">
+            Ksh {totalRevenue.toLocaleString()}
+          </span>
         </p>
       </div>
 
@@ -85,12 +91,20 @@ export default function Dashboard() {
           <tbody>
             {filteredSales.length > 0 ? (
               filteredSales.map((sale, idx) => (
-                <tr key={sale.id} className={`border-t border-gray-700 ${idx % 2 === 0 ? "bg-gray-900" : "bg-gray-800/40"} hover:bg-gray-800/70`}>
+                <tr
+                  key={sale.id}
+                  className={`border-t border-gray-700 ${
+                    idx % 2 === 0 ? "bg-gray-900" : "bg-gray-800/40"
+                  } hover:bg-gray-800/70`}
+                >
                   <td className="py-2 px-4">{new Date(sale.createdAt).toLocaleString()}</td>
                   <td className="py-2 px-4 space-y-1">
                     {sale.SaleItems.map((item) => (
                       <div key={item.id}>
-                        {item.quantity}× <span className="text-amber-400">{item.product?.name || "Unnamed Product"}</span>
+                        {item.quantity}×{" "}
+                        <span className="text-amber-400">
+                          {item.Product?.name || "Unnamed Product"}
+                        </span>
                       </div>
                     ))}
                   </td>
@@ -99,7 +113,9 @@ export default function Dashboard() {
               ))
             ) : (
               <tr>
-                <td colSpan="3" className="py-3 text-center text-gray-500 italic">No sales found</td>
+                <td colSpan="3" className="py-3 text-center text-gray-500 italic">
+                  No sales found
+                </td>
               </tr>
             )}
           </tbody>

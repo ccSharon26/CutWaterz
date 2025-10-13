@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchProducts } from "../api";
+import { fetchProducts, recordSale as apiRecordSale } from "../api";
 
 export default function POS() {
   const [products, setProducts] = useState([]);
@@ -38,15 +38,11 @@ export default function POS() {
 
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
-  const recordSale = async () => {
+  const handleRecordSale = async () => {
     if (cart.length === 0) return alert("Cart is empty!");
     setLoading(true);
     try {
-      await fetch(`${process.env.NODE_ENV === "production" ? "https://<RAILWAY_URL>" : "http://localhost:4000"}/api/sales`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items: cart, total }),
-      });
+      await apiRecordSale(cart, total);
       alert("Sale recorded successfully!");
       setCart([]);
       await getProducts();
@@ -126,7 +122,7 @@ export default function POS() {
         <div className="flex justify-between items-center mt-6">
           <h3 className="text-lg font-bold text-amber-400">Total: Ksh {total.toFixed(2)}</h3>
           <button
-            onClick={recordSale}
+            onClick={handleRecordSale}
             disabled={loading}
             className="bg-amber-500 text-black px-6 py-2 rounded-lg font-semibold hover:bg-amber-600 transition disabled:opacity-50"
           >

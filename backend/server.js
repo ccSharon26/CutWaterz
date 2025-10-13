@@ -1,20 +1,23 @@
 import express from "express";
-import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
+import adminRoutes from "./routes/adminroutes.js";
+import salesRoutes from "./routes/salesRoutes.js";
+import { connectDB } from "./models/Index.js";
+import productRoutes from "./routes/productRoutes.js";
 
 dotenv.config();
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
+app.use("/api/admin", adminRoutes);
+app.use("/api/sales", salesRoutes);
+app.use("/api/products", productRoutes);
+
 const PORT = process.env.PORT || 4000;
 
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log("✅ MongoDB connected"))
-  .catch((err) => console.error("❌ MongoDB connection error:", err));
+await connectDB(); // initialize DB
 
-app.get("/", (req, res) => res.send("CutWaterz Backend is running..."));
-
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
