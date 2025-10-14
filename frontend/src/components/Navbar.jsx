@@ -80,9 +80,7 @@ export default function Navbar() {
       {/* Mobile sliding menu */}
       <div
         className={`md:hidden fixed inset-0 z-40 transition-all duration-300 ease-in-out ${
-          isOpen
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
+          isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
       >
         {/* overlay */}
@@ -99,7 +97,7 @@ export default function Navbar() {
             isOpen ? "translate-x-0" : "translate-x-full"
           }`}
           style={{
-            backgroundColor: "rgba(17, 17, 17, 0.98)", // strong opaque dark background
+            backgroundColor: "rgba(17, 17, 17, 1)", // fully opaque dark background
           }}
         >
           <div className="flex items-center justify-between mb-6">
