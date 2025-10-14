@@ -1,42 +1,39 @@
 /* eslint-disable no-restricted-globals */
-const CACHE_NAME = "cutwaterz-cache-v2";
-const STATIC_ASSETS = ["/", "/index.html", "/manifest.json"];
+const CACHE_NAME = "cutwaterz-cache-v4";
+const STATIC_ASSETS = [
+  "./",
+  "./index.html",
+  "./manifest.json",
+  "./favicon.ico",
+];
 
-// ✅ Install
+// Install and pre-cache static assets
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
-  );
-  self.skipWaiting(); // activate immediately
-});
-
-// ✅ Activate
-self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) =>
+    caches.open(CACHE_NAME).then((cache) =>
       Promise.all(
-        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
+        STATIC_ASSETS.map((url) =>
+          fetch(url).then((response) => {
+            if (!response.ok) throw new Error(`Request failed for ${url}`);
+            return cache.put(url, response);
+          })
+        )
       )
     )
   );
-  self.clients.claim(); // control all pages right away
+  self.skipWaiting();
 });
 
-// ✅ Fetch handler
+// Serve cached files when offline
 self.addEventListener("fetch", (event) => {
   const requestUrl = new URL(event.request.url);
 
-  // 1️⃣ Network-first for API requests
+  // Let network handle API requests (railway backend)
   if (requestUrl.origin.includes("railway.app")) {
-    event.respondWith(
-      fetch(event.request)
-        .then((response) => response)
-        .catch(() => caches.match(event.request))
-    );
+    event.respondWith(fetch(event.request).catch(() => caches.match(event.request)));
     return;
   }
 
-  // 2️⃣ Cache-first for static assets
   if (event.request.method === "GET") {
     event.respondWith(
       caches.match(event.request).then((cachedResponse) => {
@@ -48,8 +45,17 @@ self.addEventListener("fetch", (event) => {
             caches.open(CACHE_NAME).then((cache) => cache.put(event.request, cloned));
             return response;
           })
-          .catch(() => caches.match("/index.html")); // fallback
+          .catch(() => caches.match("./index.html"));
       })
     );
   }
+});
+
+// Clear old caches
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
+    )
+  );
 });
