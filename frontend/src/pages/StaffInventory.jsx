@@ -1,4 +1,3 @@
-// src/pages/StaffInventory.jsx
 import { useEffect, useState, useCallback } from "react";
 import CONFIG from "../config";
 
@@ -79,7 +78,7 @@ export default function StaffInventory() {
   };
 
   return (
-    <div className="min-h-screen pt-20 px-6">
+    <div className="min-h-screen pt-20 px-4 sm:px-6">
       <h2 className="text-2xl font-bold text-amber-500 mb-6">👷 Staff Inventory</h2>
 
       {/* Add new product form */}
@@ -87,9 +86,7 @@ export default function StaffInventory() {
         onSubmit={handleAddProduct}
         className="bg-gray-900/70 border border-gray-700 p-4 rounded-lg mb-8 shadow-md"
       >
-        <h3 className="text-lg font-semibold mb-3 text-amber-400">
-          ➕ Add New Product
-        </h3>
+        <h3 className="text-lg font-semibold mb-3 text-amber-400">➕ Add New Product</h3>
         <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
           <input
             type="text"
@@ -134,11 +131,9 @@ export default function StaffInventory() {
         </div>
       </form>
 
-      {/* Product Table */}
-      <div className="bg-gray-900/70 p-4 rounded-lg shadow-md overflow-x-auto border border-gray-700">
-        <h3 className="text-lg font-semibold mb-4 text-amber-400">
-          📦 Current Stock
-        </h3>
+      {/* Product Table (Desktop) */}
+      <div className="hidden md:block bg-gray-900/70 p-4 rounded-lg shadow-md overflow-x-auto border border-gray-700">
+        <h3 className="text-lg font-semibold mb-4 text-amber-400">📦 Current Stock</h3>
         <table className="w-full text-sm">
           <thead className="bg-amber-500 text-black">
             <tr>
@@ -181,16 +176,48 @@ export default function StaffInventory() {
               ))
             ) : (
               <tr>
-                <td
-                  colSpan="5"
-                  className="p-3 text-center text-gray-400 italic"
-                >
+                <td colSpan="5" className="p-3 text-center text-gray-400 italic">
                   No products found
                 </td>
               </tr>
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* Mobile Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:hidden">
+        {products.length > 0 ? (
+          products.map((p) => (
+            <div
+              key={p.id}
+              className="bg-gray-900/70 border border-gray-700 p-4 rounded-lg shadow-md"
+            >
+              <h4 className="text-lg font-semibold text-amber-400 mb-1">{p.name}</h4>
+              <p className="text-gray-300 text-sm">Category: {p.category || "—"}</p>
+              <p className="text-gray-300 text-sm">Price: Ksh {p.price}</p>
+              <p className="text-gray-300 text-sm mb-2">Stock: {p.stock}</p>
+              <div className="flex items-center gap-2 mt-2">
+                <input
+                  type="number"
+                  min="1"
+                  placeholder="Qty"
+                  value={addQty[p.id] || ""}
+                  onChange={(e) => setAddQty({ ...addQty, [p.id]: e.target.value })}
+                  className="w-20 text-center p-1 bg-gray-800/60 border border-gray-700 text-gray-100 rounded"
+                />
+                <button
+                  onClick={() => handleAddStock(p.id)}
+                  className="bg-amber-500 text-black px-3 py-1 rounded font-semibold hover:bg-amber-600 transition"
+                >
+                  Add
+                </button>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p className="text-center text-gray-400 italic">No products found</p>
+        )}
       </div>
     </div>
   );

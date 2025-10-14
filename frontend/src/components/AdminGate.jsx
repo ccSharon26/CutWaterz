@@ -1,21 +1,22 @@
-// 🧱 AdminGate overlay component
+// src/components/AdminGate.jsx
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const AdminGate = ({ children }) => {
   const [password, setPassword] = useState("");
   const [isAuthorized, setIsAuthorized] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
-  const correctPassword = "12345"; // 🔒 change when ready
+  const correctPassword = "12345"; // change anytime
 
-  // Restore session
+  // ✅ Check session on mount
   useEffect(() => {
     const auth = sessionStorage.getItem("isAdminAuthorized");
     if (auth === "true") setIsAuthorized(true);
   }, []);
 
-  // Expire session after 3 minutes of inactivity
+  // ✅ Timeout after 3 minutes of inactivity
   useEffect(() => {
     let timeout;
     const resetTimer = () => {
@@ -23,7 +24,8 @@ const AdminGate = ({ children }) => {
       timeout = setTimeout(() => {
         sessionStorage.removeItem("isAdminAuthorized");
         setIsAuthorized(false);
-      }, 3 * 60 * 1000); // 3 mins
+        navigate("/"); // back to POS
+      }, 3 * 60 * 1000);
     };
 
     if (isAuthorized) {
@@ -37,16 +39,14 @@ const AdminGate = ({ children }) => {
       window.removeEventListener("mousemove", resetTimer);
       window.removeEventListener("click", resetTimer);
     };
-  }, [isAuthorized]);
+  }, [isAuthorized, navigate]);
 
-  // 🔒 If user navigates away from /admin, revoke session
- useEffect(() => {
-  const currentHash = window.location.hash;
-  if (!currentHash.endsWith("/admin")) {
-    sessionStorage.removeItem("isAdminAuthorized");
-    setIsAuthorized(false);
-  }
-}, [location]);
+  // ✅ Force re-auth when navigating to /admin
+  useEffect(() => {
+    if (location.pathname === "/admin" && !isAuthorized) {
+      sessionStorage.removeItem("isAdminAuthorized");
+    }
+  }, [location.pathname, isAuthorized]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -60,12 +60,8 @@ const AdminGate = ({ children }) => {
     }
   };
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("isAdminAuthorized");
-    window.location.href = `${window.location.origin}${window.location.pathname}#/pos`;
-  };
-
-  if (!isAuthorized) {
+  // ✅ Only protect /admin page
+  if (location.pathname === "/admin" && !isAuthorized) {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-black/70 z-50">
         <form
@@ -93,7 +89,7 @@ const AdminGate = ({ children }) => {
     );
   }
 
-  return children({ onLogout: handleLogout });
+  return children();
 };
 
 export default AdminGate;

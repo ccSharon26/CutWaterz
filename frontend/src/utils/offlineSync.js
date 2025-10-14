@@ -5,6 +5,8 @@ import { openDB } from "idb";
 const DB_NAME = "cutwaterzDB";
 const STORE_NAME = "pendingActions";
 
+
+
 // open DB
 async function getDB() {
   return openDB(DB_NAME, 1, {
