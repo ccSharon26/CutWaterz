@@ -1,44 +1,58 @@
+// 🧱 AdminGate overlay component
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const AdminGate = ({ children }) => {
   const [password, setPassword] = useState("");
   const [isAuthorized, setIsAuthorized] = useState(false);
-  const navigate = useNavigate();
   const location = useLocation();
 
-  const correctPassword = "12345";
-  const SESSION_TIMEOUT = 5 * 60 * 1000; // 5 minutes
+  const correctPassword = "12345"; // 🔒 change when ready
 
-  // Check if user is already authorized and session not expired
+  // Restore session
   useEffect(() => {
     const auth = sessionStorage.getItem("isAdminAuthorized");
-    const expiry = sessionStorage.getItem("adminExpiry");
-
-    if (auth === "true" && expiry && Date.now() < parseInt(expiry, 10)) {
-      setIsAuthorized(true);
-    } else {
-      sessionStorage.removeItem("isAdminAuthorized");
-      sessionStorage.removeItem("adminExpiry");
-    }
+    if (auth === "true") setIsAuthorized(true);
   }, []);
 
-  // Invalidate session on tab close or navigation away
+  // Expire session after 3 minutes of inactivity
   useEffect(() => {
-    const handleUnload = () => {
-      sessionStorage.removeItem("isAdminAuthorized");
-      sessionStorage.removeItem("adminExpiry");
+    let timeout;
+    const resetTimer = () => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        sessionStorage.removeItem("isAdminAuthorized");
+        setIsAuthorized(false);
+      }, 3 * 60 * 1000); // 3 mins
     };
-    window.addEventListener("beforeunload", handleUnload);
-    return () => window.removeEventListener("beforeunload", handleUnload);
-  }, []);
+
+    if (isAuthorized) {
+      window.addEventListener("mousemove", resetTimer);
+      window.addEventListener("click", resetTimer);
+      resetTimer();
+    }
+
+    return () => {
+      clearTimeout(timeout);
+      window.removeEventListener("mousemove", resetTimer);
+      window.removeEventListener("click", resetTimer);
+    };
+  }, [isAuthorized]);
+
+  // 🔒 If user navigates away from /admin, revoke session
+ useEffect(() => {
+  const currentHash = window.location.hash;
+  if (!currentHash.endsWith("/admin")) {
+    sessionStorage.removeItem("isAdminAuthorized");
+    setIsAuthorized(false);
+  }
+}, [location]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (password === correctPassword) {
-      sessionStorage.setItem("isAdminAuthorized", "true");
-      sessionStorage.setItem("adminExpiry", Date.now() + SESSION_TIMEOUT);
       setIsAuthorized(true);
+      sessionStorage.setItem("isAdminAuthorized", "true");
       setPassword("");
     } else {
       alert("Incorrect password!");
@@ -48,22 +62,8 @@ const AdminGate = ({ children }) => {
 
   const handleLogout = () => {
     sessionStorage.removeItem("isAdminAuthorized");
-    sessionStorage.removeItem("adminExpiry");
-    setIsAuthorized(false);
-    navigate("/pos", { replace: true }); // ✅ Fix redirect for live build
+    window.location.href = `${window.location.origin}${window.location.pathname}#/pos`;
   };
-
-  // Revoke access if session expired while browsing
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const expiry = sessionStorage.getItem("adminExpiry");
-      if (expiry && Date.now() > parseInt(expiry, 10)) {
-        handleLogout();
-      }
-    }, 10000); // check every 10s
-
-    return () => clearInterval(interval);
-  }, []);
 
   if (!isAuthorized) {
     return (
