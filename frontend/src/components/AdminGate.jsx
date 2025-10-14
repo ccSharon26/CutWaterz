@@ -1,26 +1,43 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const AdminGate = ({ children }) => {
   const [password, setPassword] = useState("");
   const [isAuthorized, setIsAuthorized] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const correctPassword = "12345"; 
+  const correctPassword = "12345";
+  const SESSION_TIMEOUT = 5 * 60 * 1000; // 5 minutes
 
+  // Check if user is already authorized and session not expired
   useEffect(() => {
     const auth = sessionStorage.getItem("isAdminAuthorized");
-    if (auth === "true") setIsAuthorized(true);
+    const expiry = sessionStorage.getItem("adminExpiry");
 
-    return () => {
+    if (auth === "true" && expiry && Date.now() < parseInt(expiry, 10)) {
+      setIsAuthorized(true);
+    } else {
       sessionStorage.removeItem("isAdminAuthorized");
+      sessionStorage.removeItem("adminExpiry");
+    }
+  }, []);
+
+  // Invalidate session on tab close or navigation away
+  useEffect(() => {
+    const handleUnload = () => {
+      sessionStorage.removeItem("isAdminAuthorized");
+      sessionStorage.removeItem("adminExpiry");
     };
+    window.addEventListener("beforeunload", handleUnload);
+    return () => window.removeEventListener("beforeunload", handleUnload);
   }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (password === correctPassword) {
       sessionStorage.setItem("isAdminAuthorized", "true");
+      sessionStorage.setItem("adminExpiry", Date.now() + SESSION_TIMEOUT);
       setIsAuthorized(true);
       setPassword("");
     } else {
@@ -31,9 +48,22 @@ const AdminGate = ({ children }) => {
 
   const handleLogout = () => {
     sessionStorage.removeItem("isAdminAuthorized");
+    sessionStorage.removeItem("adminExpiry");
     setIsAuthorized(false);
-    navigate("/"); // works on localhost & GH Pages
+    navigate("/pos", { replace: true }); // ✅ Fix redirect for live build
   };
+
+  // Revoke access if session expired while browsing
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const expiry = sessionStorage.getItem("adminExpiry");
+      if (expiry && Date.now() > parseInt(expiry, 10)) {
+        handleLogout();
+      }
+    }, 10000); // check every 10s
+
+    return () => clearInterval(interval);
+  }, []);
 
   if (!isAuthorized) {
     return (
