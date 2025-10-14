@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/CutWaterz/static/css/main.a96c6e7d.css",
-    "main.js": "/CutWaterz/static/js/main.83921623.js",
+    "main.css": "/CutWaterz/static/css/main.56588953.css",
+    "main.js": "/CutWaterz/static/js/main.af014811.js",
     "static/media/background.png": "/CutWaterz/static/media/background.9dba41423af72a2fb246.png",
     "index.html": "/CutWaterz/index.html",
-    "main.a96c6e7d.css.map": "/CutWaterz/static/css/main.a96c6e7d.css.map",
-    "main.83921623.js.map": "/CutWaterz/static/js/main.83921623.js.map"
+    "main.56588953.css.map": "/CutWaterz/static/css/main.56588953.css.map",
+    "main.af014811.js.map": "/CutWaterz/static/js/main.af014811.js.map"
   },
   "entrypoints": [
-    "static/css/main.a96c6e7d.css",
-    "static/js/main.83921623.js"
+    "static/css/main.56588953.css",
+    "static/js/main.af014811.js"
   ]
 }
