@@ -18,7 +18,7 @@ export default function Navbar() {
     { name: "Admin", path: "/admin" },
   ];
 
-  // 🧭 Navbar hide on scroll down (only on mobile)
+  // 🧭 Hide navbar when scrolling down (mobile only)
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > lastScrollY && window.scrollY > 50) {
@@ -79,7 +79,7 @@ export default function Navbar() {
             : "opacity-0 pointer-events-none"
         }`}
       >
-        {/* overlay fade */}
+        {/* dark overlay */}
         <div
           className={`absolute inset-0 bg-black/60 transition-opacity duration-300 ${
             isOpen ? "opacity-100" : "opacity-0"
@@ -89,7 +89,7 @@ export default function Navbar() {
 
         {/* sliding panel */}
         <div
-          className={`absolute right-0 top-0 h-full w-64 bg-gray-900 border-l border-gray-800 p-4 transform transition-transform duration-300 ${
+          className={`absolute right-0 top-0 h-full w-64 bg-gray-950/95 border-l border-gray-800 p-4 backdrop-blur-md shadow-2xl transform transition-transform duration-300 ${
             isOpen ? "translate-x-0" : "translate-x-full"
           }`}
         >
