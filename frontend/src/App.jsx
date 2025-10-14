@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+// src/App.jsx
+import React, { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
@@ -8,18 +9,43 @@ import Dashboard from "./pages/Dashboard";
 import AdminInventory from "./pages/AdminInventory";
 import StaffInventory from "./pages/StaffInventory";
 
-// AdminGate overlay component (keeps the exact behavior you wanted)
+import { syncActions } from "./utils/offlineSync"; // offline sync helper
+
+// 🧱 AdminGate overlay component
 const AdminGate = ({ children }) => {
   const [password, setPassword] = useState("");
   const [isAuthorized, setIsAuthorized] = useState(false);
 
-  // using sessionStorage so a new tab requires re-login
-  const correctPassword = "12345"; // change when ready
+  const correctPassword = "12345"; // 🔒 change when ready
 
+  // Restore session
   useEffect(() => {
     const auth = sessionStorage.getItem("isAdminAuthorized");
     if (auth === "true") setIsAuthorized(true);
   }, []);
+
+  // Watch for tab switch or reload — expire after 3 minutes of inactivity
+  useEffect(() => {
+    let timeout;
+    const resetTimer = () => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        sessionStorage.removeItem("isAdminAuthorized");
+        setIsAuthorized(false);
+      }, 3 * 60 * 1000); // 3 mins
+    };
+
+    if (isAuthorized) {
+      window.addEventListener("mousemove", resetTimer);
+      window.addEventListener("click", resetTimer);
+      resetTimer();
+    }
+    return () => {
+      clearTimeout(timeout);
+      window.removeEventListener("mousemove", resetTimer);
+      window.removeEventListener("click", resetTimer);
+    };
+  }, [isAuthorized]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -69,10 +95,27 @@ const AdminGate = ({ children }) => {
   return children({ onLogout: handleLogout });
 };
 
+// 🧠 Main App
 function App() {
+  useEffect(() => {
+    // Try sync when app loads
+    syncActions();
+
+    // Re-sync whenever we go online again
+    const onOnline = () => {
+      console.log("🌐 Back online — syncing offline actions...");
+      syncActions();
+    };
+    window.addEventListener("online", onOnline);
+
+    return () => {
+      window.removeEventListener("online", onOnline);
+    };
+  }, []);
+
   return (
     <div
-      className="min-h-screen text-gray-100 overflow-x-hidden"
+      className="min-h-screen text-gray-100 overflow-x-hidden flex flex-col"
       style={{
         backgroundImage: `url(${process.env.PUBLIC_URL}/background.png)`,
         backgroundSize: "cover",
@@ -81,7 +124,7 @@ function App() {
     >
       <Navbar />
 
-      <main className="pt-16 px-6 pb-10">
+      <main className="flex-1 pt-16 px-4 sm:px-6 pb-10 max-w-7xl mx-auto w-full">
         <Routes>
           <Route path="/" element={<POS />} />
           <Route path="/inventory" element={<Inventory />} />
@@ -97,6 +140,11 @@ function App() {
           />
         </Routes>
       </main>
+
+      {/* Simple mobile footer (for Android PWA) */}
+      <footer className="text-center py-4 text-gray-400 text-sm bg-gray-900/60 backdrop-blur-sm">
+        <p>© {new Date().getFullYear()} CutWaterz POS | Offline-ready 🍹</p>
+      </footer>
     </div>
   );
 }

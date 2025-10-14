@@ -1,5 +1,10 @@
+// src/pages/Inventory.jsx
 import { useEffect, useState } from "react";
 import { fetchProducts } from "../api";
+import { saveOfflineAction } from "../utils/offlineSync";
+import CONFIG from "../config";
+
+const BASE_URL = CONFIG.BASE_URL;
 
 export default function Inventory() {
   const [products, setProducts] = useState([]);
@@ -11,6 +16,7 @@ export default function Inventory() {
       setProducts(data);
     } catch (err) {
       console.error("Error fetching products:", err);
+      // keep stale UI if offline
     }
   };
 
@@ -22,8 +28,12 @@ export default function Inventory() {
     p.name.toLowerCase().includes(search.toLowerCase())
   );
 
+  // Example: staff adding stock to an existing product (if you implement a button)
+  // If offline, call saveOfflineAction({ url, method: 'PATCH', body: {...} })
+  // (Inventory page is read-only in your original; POS/Staff/Admin handle writes)
+
   return (
-    <div className="min-h-screen pt-20">
+    <div className="min-h-screen pt-20 p-4">
       <h2 className="text-2xl font-bold mb-6 text-amber-500">📋 Inventory</h2>
 
       <div className="mb-4 flex justify-between items-center">
@@ -50,9 +60,7 @@ export default function Inventory() {
               filteredProducts.map((p, idx) => (
                 <tr
                   key={p.id}
-                  className={`border-t border-gray-700 ${
-                    idx % 2 === 0 ? "bg-gray-900/70" : "bg-gray-800/50"
-                  } hover:bg-gray-800/60 transition`}
+                  className={`border-t border-gray-700 ${idx % 2 === 0 ? "bg-gray-900/70" : "bg-gray-800/50"} hover:bg-gray-800/60 transition`}
                 >
                   <td className="py-2 px-4">{p.name}</td>
                   <td className="py-2 px-4 text-amber-400 font-medium">{p.price}</td>

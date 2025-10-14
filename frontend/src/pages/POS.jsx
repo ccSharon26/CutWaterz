@@ -1,5 +1,10 @@
+// src/pages/POS.jsx
 import { useEffect, useState } from "react";
 import { fetchProducts, recordSale as apiRecordSale } from "../api";
+import { saveOfflineAction } from "../utils/offlineSync";
+import CONFIG from "../config";
+
+const BASE_URL = CONFIG.BASE_URL;
 
 export default function POS() {
   const [products, setProducts] = useState([]);
@@ -13,11 +18,14 @@ export default function POS() {
       setProducts(data);
     } catch (err) {
       console.error("Error fetching products:", err);
+      // keep UI usable even if offline
     }
   };
 
   useEffect(() => {
     getProducts();
+    // attempt sync when we mount if online
+    // (global sync hook in App.jsx also listens for "online" events)
   }, []);
 
   const addToCart = (product) => {
@@ -48,14 +56,38 @@ export default function POS() {
     if (cart.length === 0) return alert("Cart is empty!");
     setLoading(true);
 
+    // Build payload similar to your backend expectation
+    const items = cart.map((c) => ({ id: c.id, quantity: c.quantity, price: c.price }));
+
     try {
-      await apiRecordSale(cart, total);
+      // Prefer using api wrapper; it will throw if offline
+      await apiRecordSale(items, total);
       alert("Sale recorded successfully!");
       setCart([]);
-      await getProducts();
+      await getProducts(); // refresh stock from server
     } catch (err) {
-      console.error(err);
-      alert("Failed to record sale.");
+      console.warn("Recording sale failed (probably offline). Saving action locally to sync later.", err);
+
+      // Save action to IndexedDB for later sync
+      await saveOfflineAction({
+        url: `${BASE_URL}/api/sales`,
+        method: "POST",
+        body: { items, total },
+      });
+
+      alert(
+        "No network — sale saved locally and will sync automatically when online."
+      );
+      // locally update product stock in UI so POS continues to work
+      setProducts((prev) =>
+        prev.map((p) => {
+          const inCart = cart.find((c) => c.id === p.id);
+          if (!inCart) return p;
+          return { ...p, stock: p.stock - inCart.quantity };
+        })
+      );
+
+      setCart([]);
     } finally {
       setLoading(false);
     }
@@ -66,7 +98,7 @@ export default function POS() {
   );
 
   return (
-    <div className="min-h-screen pt-20">
+    <div className="min-h-screen pt-20 p-4">
       <h2 className="text-2xl font-bold mb-6 text-amber-500">🍹 CutWaterz POS Terminal</h2>
 
       <div className="mb-6">
@@ -79,7 +111,7 @@ export default function POS() {
         />
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
         {filteredProducts.map((product) => (
           <button
             key={product.id}
@@ -101,47 +133,47 @@ export default function POS() {
         ))}
       </div>
 
-      <div className="mt-8 bg-gray-900/70 p-4 rounded-lg shadow-md border border-gray-800">
+      <div className="mt-6 bg-gray-900/70 p-4 rounded-lg shadow-md border border-gray-800">
         <h3 className="text-xl font-semibold mb-4 text-amber-500">🧾 Cart</h3>
         {cart.length === 0 ? (
           <p className="text-gray-400">No items in cart.</p>
         ) : (
-          <table className="w-full text-sm border-collapse border border-gray-700">
-            <thead className="bg-amber-500 text-black">
-              <tr>
-                <th className="p-2 text-left">Product</th>
-                <th>Qty</th>
-                <th>Price</th>
-                <th>Subtotal</th>
-              </tr>
-            </thead>
-            <tbody>
-              {cart.map((item) => (
-                <tr key={item.id} className="border-t border-gray-700">
-                  <td className="p-2">{item.name}</td>
-                  <td>
-                    <input
-                      type="number"
-                      min="1"
-                      value={item.quantity}
-                      onChange={(e) =>
-                        updateQty(item.id, parseInt(e.target.value))
-                      }
-                      className="w-16 text-center p-1 border border-gray-600 bg-gray-900/70 text-gray-100 rounded"
-                    />
-                  </td>
-                  <td>Ksh {item.price}</td>
-                  <td>Ksh {(item.price * item.quantity).toFixed(2)}</td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm border-collapse border border-gray-700">
+              <thead className="bg-amber-500 text-black">
+                <tr>
+                  <th className="p-2 text-left">Product</th>
+                  <th className="p-2">Qty</th>
+                  <th className="p-2">Price</th>
+                  <th className="p-2">Subtotal</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {cart.map((item) => (
+                  <tr key={item.id} className="border-t border-gray-700">
+                    <td className="p-2">{item.name}</td>
+                    <td>
+                      <input
+                        type="number"
+                        min="1"
+                        value={item.quantity}
+                        onChange={(e) =>
+                          updateQty(item.id, parseInt(e.target.value, 10))
+                        }
+                        className="w-16 text-center p-1 border border-gray-600 bg-gray-900/70 text-gray-100 rounded"
+                      />
+                    </td>
+                    <td>Ksh {item.price}</td>
+                    <td>Ksh {(item.price * item.quantity).toFixed(2)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
 
-        <div className="flex justify-between items-center mt-6">
-          <h3 className="text-lg font-bold text-amber-400">
-            Total: Ksh {total.toFixed(2)}
-          </h3>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-6 gap-4">
+          <h3 className="text-lg font-bold text-amber-400">Total: Ksh {total.toFixed(2)}</h3>
           <button
             onClick={handleRecordSale}
             disabled={loading}
