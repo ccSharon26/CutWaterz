@@ -1,10 +1,10 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import adminRoutes from "./routes/adminRoutes.js";
 import salesRoutes from "./routes/salesRoutes.js";
 import { connectDB } from "./models/Index.js";
 import productRoutes from "./routes/productRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
 
 dotenv.config();
 const app = express();

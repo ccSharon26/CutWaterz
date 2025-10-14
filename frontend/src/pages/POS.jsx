@@ -25,7 +25,13 @@ export default function POS() {
     const existing = cart.find((item) => item.id === product.id);
     if (existing) {
       if (existing.quantity >= product.stock) return alert("Not enough stock!");
-      setCart(cart.map((item) => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item));
+      setCart(
+        cart.map((item) =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        )
+      );
     } else {
       setCart([...cart, { ...product, quantity: 1 }]);
     }
@@ -33,7 +39,7 @@ export default function POS() {
 
   const updateQty = (id, qty) => {
     if (qty < 1) return setCart(cart.filter((item) => item.id !== id));
-    setCart(cart.map((item) => item.id === id ? { ...item, quantity: qty } : item));
+    setCart(cart.map((item) => (item.id === id ? { ...item, quantity: qty } : item)));
   };
 
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -41,6 +47,7 @@ export default function POS() {
   const handleRecordSale = async () => {
     if (cart.length === 0) return alert("Cart is empty!");
     setLoading(true);
+
     try {
       await apiRecordSale(cart, total);
       alert("Sale recorded successfully!");
@@ -83,7 +90,11 @@ export default function POS() {
               <p className="font-semibold text-gray-100">{product.name}</p>
               <p className="text-sm text-amber-400">Ksh {product.price}</p>
             </div>
-            <p className={`text-xs mt-2 ${product.stock > 0 ? "text-gray-400" : "text-red-500"}`}>
+            <p
+              className={`text-xs mt-2 ${
+                product.stock > 0 ? "text-gray-400" : "text-red-500"
+              }`}
+            >
               Stock: {product.stock}
             </p>
           </button>
@@ -113,7 +124,9 @@ export default function POS() {
                       type="number"
                       min="1"
                       value={item.quantity}
-                      onChange={(e) => updateQty(item.id, parseInt(e.target.value))}
+                      onChange={(e) =>
+                        updateQty(item.id, parseInt(e.target.value))
+                      }
                       className="w-16 text-center p-1 border border-gray-600 bg-gray-900/70 text-gray-100 rounded"
                     />
                   </td>
@@ -126,7 +139,9 @@ export default function POS() {
         )}
 
         <div className="flex justify-between items-center mt-6">
-          <h3 className="text-lg font-bold text-amber-400">Total: Ksh {total.toFixed(2)}</h3>
+          <h3 className="text-lg font-bold text-amber-400">
+            Total: Ksh {total.toFixed(2)}
+          </h3>
           <button
             onClick={handleRecordSale}
             disabled={loading}

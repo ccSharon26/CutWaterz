@@ -14,6 +14,7 @@ export default function Navbar() {
           { name: "POS", path: "/" },
           { name: "Inventory", path: "/inventory" },
           { name: "Dashboard", path: "/dashboard" },
+          { name: "Staff", path: "/staff" },
           { name: "Admin", path: "/admin" },
         ].map((link) => (
           <Link

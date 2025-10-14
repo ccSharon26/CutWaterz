@@ -6,16 +6,18 @@ import POS from "./pages/POS";
 import Inventory from "./pages/Inventory";
 import Dashboard from "./pages/Dashboard";
 import AdminInventory from "./pages/AdminInventory";
+import StaffInventory from "./pages/StaffInventory";
 
-// AdminGate overlay component
+// AdminGate overlay component (keeps the exact behavior you wanted)
 const AdminGate = ({ children }) => {
   const [password, setPassword] = useState("");
   const [isAuthorized, setIsAuthorized] = useState(false);
 
-  const correctPassword = "12345"; // change as needed
+  // using sessionStorage so a new tab requires re-login
+  const correctPassword = "12345"; // change when ready
 
   useEffect(() => {
-    const auth = localStorage.getItem("isAdminAuthorized");
+    const auth = sessionStorage.getItem("isAdminAuthorized");
     if (auth === "true") setIsAuthorized(true);
   }, []);
 
@@ -23,7 +25,7 @@ const AdminGate = ({ children }) => {
     e.preventDefault();
     if (password === correctPassword) {
       setIsAuthorized(true);
-      localStorage.setItem("isAdminAuthorized", "true");
+      sessionStorage.setItem("isAdminAuthorized", "true");
       setPassword("");
     } else {
       alert("Incorrect password!");
@@ -32,7 +34,7 @@ const AdminGate = ({ children }) => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("isAdminAuthorized");
+    sessionStorage.removeItem("isAdminAuthorized");
     window.location.href = "/";
   };
 
@@ -84,6 +86,7 @@ function App() {
           <Route path="/" element={<POS />} />
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/staff" element={<StaffInventory />} />
           <Route
             path="/admin"
             element={
