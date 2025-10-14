@@ -1,36 +1,26 @@
 // src/pages/Inventory.jsx
 import { useEffect, useState } from "react";
-import { fetchProducts } from "../api";
-//import { saveOfflineAction } from "../utils/offlineSync";
-import CONFIG from "../config";
-
-const BASE_URL = CONFIG.BASE_URL;
+import { fetchProducts } from "../api"; // fetchProducts uses BASE_URL internally
 
 export default function Inventory() {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
 
-  const getProducts = async () => {
-    try {
-      const data = await fetchProducts();
-      setProducts(data);
-    } catch (err) {
-      console.error("Error fetching products:", err);
-      // keep stale UI if offline
-    }
-  };
-
   useEffect(() => {
+    const getProducts = async () => {
+      try {
+        const data = await fetchProducts();
+        setProducts(data);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+      }
+    };
     getProducts();
   }, []);
 
   const filteredProducts = products.filter((p) =>
     p.name.toLowerCase().includes(search.toLowerCase())
   );
-
-  // Example: staff adding stock to an existing product (if you implement a button)
-  // If offline, call saveOfflineAction({ url, method: 'PATCH', body: {...} })
-  // (Inventory page is read-only in your original; POS/Staff/Admin handle writes)
 
   return (
     <div className="min-h-screen pt-20 p-4">
@@ -60,7 +50,9 @@ export default function Inventory() {
               filteredProducts.map((p, idx) => (
                 <tr
                   key={p.id}
-                  className={`border-t border-gray-700 ${idx % 2 === 0 ? "bg-gray-900/70" : "bg-gray-800/50"} hover:bg-gray-800/60 transition`}
+                  className={`border-t border-gray-700 ${
+                    idx % 2 === 0 ? "bg-gray-900/70" : "bg-gray-800/50"
+                  } hover:bg-gray-800/60 transition`}
                 >
                   <td className="py-2 px-4">{p.name}</td>
                   <td className="py-2 px-4 text-amber-400 font-medium">{p.price}</td>
