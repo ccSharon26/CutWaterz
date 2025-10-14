@@ -1,7 +1,7 @@
 // src/pages/Inventory.jsx
 import { useEffect, useState } from "react";
 import { fetchProducts } from "../api";
-import { saveOfflineAction } from "../utils/offlineSync";
+//import { saveOfflineAction } from "../utils/offlineSync";
 import CONFIG from "../config";
 
 const BASE_URL = CONFIG.BASE_URL;

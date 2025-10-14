@@ -1,19 +1,17 @@
-// paste this AdminGate component into App.jsx (replace the current AdminGate)
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AdminGate = ({ children }) => {
   const [password, setPassword] = useState("");
   const [isAuthorized, setIsAuthorized] = useState(false);
+  const navigate = useNavigate();
 
-  const correctPassword = "12345"; // change when ready
+  const correctPassword = "12345"; 
 
-  // on mount, check sessionStorage
   useEffect(() => {
     const auth = sessionStorage.getItem("isAdminAuthorized");
     if (auth === "true") setIsAuthorized(true);
 
-    // cleanup: when this component unmounts (i.e. leaving /admin),
-    // remove the session flag so returning requires login again.
     return () => {
       sessionStorage.removeItem("isAdminAuthorized");
     };
@@ -33,8 +31,8 @@ const AdminGate = ({ children }) => {
 
   const handleLogout = () => {
     sessionStorage.removeItem("isAdminAuthorized");
-    // keep behavior you had: go back to home
-    window.location.href = "/";
+    setIsAuthorized(false);
+    navigate("/"); // works on localhost & GH Pages
   };
 
   if (!isAuthorized) {

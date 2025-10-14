@@ -1,4 +1,3 @@
-// add this helper near your imports
 import { useEffect, useState, useCallback } from "react";
 import CONFIG from "../config";
 
