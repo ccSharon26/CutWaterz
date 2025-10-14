@@ -1,6 +1,6 @@
 // src/utils/offlineSync.js
 import { openDB } from "idb";
-import CONFIG from "../config";
+//import CONFIG from "../config";
 
 const DB_NAME = "cutwaterzDB";
 const STORE_NAME = "pendingActions";

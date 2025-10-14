@@ -11,7 +11,7 @@ const app = express();
 
 // ⚡ CORS configuration
 app.use(cors({
-  origin: ["https://ccsharon26.github.io", "http://localhost:3000"], 
+  origin: ["https://ccsharon26.github.io", "http://localhost:3000", "http://localhost", ], 
   methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
   credentials: true,
 }));
