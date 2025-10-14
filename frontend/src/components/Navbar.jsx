@@ -95,11 +95,14 @@ export default function Navbar() {
 
         {/* sliding panel */}
         <div
-          className={`absolute right-0 top-0 h-full w-64 bg-gray-900 text-gray-200 border-l border-gray-800 p-4 shadow-2xl transform transition-transform duration-300 ${
+          className={`absolute right-0 top-0 h-full w-64 bg-gray-900 border-l border-gray-800 p-4 shadow-2xl transform transition-transform duration-300 ${
             isOpen ? "translate-x-0" : "translate-x-full"
           }`}
+          style={{
+            backgroundColor: "rgba(17, 17, 17, 0.98)", // strong opaque dark background
+          }}
         >
-          <div className="flex items-center justify-between mb-6 border-b border-gray-800 pb-2">
+          <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg font-bold text-amber-500">Menu</h2>
             <button
               className="p-1 rounded focus:outline-none"
@@ -110,16 +113,16 @@ export default function Navbar() {
             </button>
           </div>
 
-          <nav className="flex flex-col gap-2">
+          <nav className="flex flex-col gap-3">
             {links.map((link) => (
               <Link
                 key={link.name}
                 to={link.path}
                 onClick={() => setIsOpen(false)}
-                className={`block text-base py-2 px-3 rounded-lg transition-colors ${
+                className={`block text-base py-2 px-2 rounded transition-colors ${
                   currentPath === link.path
-                    ? "text-amber-400 bg-gray-800"
-                    : "text-gray-300 hover:text-amber-400 hover:bg-gray-800/70"
+                    ? "text-amber-500 bg-gray-800"
+                    : "text-gray-300 hover:text-amber-400 hover:bg-gray-800/50"
                 }`}
               >
                 {link.name}
