@@ -7,6 +7,14 @@ const STATIC_ASSETS = [
   "./favicon.ico",
 ];
 
+self.addEventListener("install", () => {
+  self.skipWaiting();
+});
+
+self.addEventListener("activate", (event) => {
+  event.waitUntil(clients.claim());
+});
+
 // Install and pre-cache static assets
 self.addEventListener("install", (event) => {
   event.waitUntil(
