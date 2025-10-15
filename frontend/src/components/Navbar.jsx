@@ -75,21 +75,14 @@ export default function Navbar() {
           isOpen ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
       >
-        {/* Dark Background Overlay */}
-        <div
-          className={`fixed inset-0 bg-black/95 backdrop-blur-lg transition-opacity duration-300 z-[60] ${
-            isOpen ? "opacity-100" : "opacity-0"
-          }`}
-          onClick={() => setIsOpen(false)}
-        />
-
+       
         {/* Sliding Panel */}
         <div
           className={`fixed right-0 top-0 h-full w-64 bg-gray-950 border-l border-gray-800 shadow-2xl transform transition-transform duration-300 ease-in-out z-[80] ${
             isOpen ? "translate-x-0" : "translate-x-full"
           }`}
         >
-          <div className="flex items-center justify-between mb-6 p-3">
+          <div className="flex items-center justify-between h-full p-3">
             <h2 className="text-lg font-bold text-white-500">Menu</h2>
             <button
               className="p-1 rounded hover:bg-gray-800 transition"
@@ -100,7 +93,7 @@ export default function Navbar() {
             </button>
           </div>
 
-          <nav className="flex flex-col gap-3 px-3">
+          <nav className="bg-gray-900/95 flex flex-col gap-3 px-3 py-6">
             {links.map((link) => (
               <Link
                 key={link.name}
