@@ -1,4 +1,3 @@
-// src/pages/POS.jsx
 import { useEffect, useState } from "react";
 import { fetchProducts, recordSale as apiRecordSale } from "../api";
 import { saveOfflineAction } from "../utils/offlineSync";
@@ -18,7 +17,6 @@ export default function POS() {
       setProducts(data);
     } catch (err) {
       console.error("Error fetching products:", err);
-      // keep UI usable even if offline
     }
   };
 
@@ -92,7 +90,7 @@ export default function POS() {
 
   return (
     <div className="min-h-screen pt-20 p-4">
-      <h2 className="text-2xl font-bold mb-6 text-amber-500">🍹 CutWaterz POS Terminal</h2>
+      <h2 className="text-2xl font-bold mb-6 text-white-500">🍹 CutWaterz POS Terminal</h2>
 
       <div className="mb-6">
         <input

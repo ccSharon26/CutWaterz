@@ -1,7 +1,6 @@
 export function register() {
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      // Correctly point to the service worker inside your project subfolder
       const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
 
       navigator.serviceWorker

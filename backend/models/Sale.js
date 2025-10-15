@@ -1,4 +1,3 @@
-// backend/models/Sale.js
 import { DataTypes } from "sequelize";
 import sequelize from "../config/db.js";
 import Product from "./Product.js";

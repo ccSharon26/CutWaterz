@@ -1,4 +1,3 @@
-// src/pages/Inventory.jsx
 import { useEffect, useState } from "react";
 import { fetchProducts } from "../api"; // fetchProducts uses BASE_URL internally
 
@@ -24,7 +23,7 @@ export default function Inventory() {
 
   return (
     <div className="min-h-screen pt-20 p-4">
-      <h2 className="text-2xl font-bold mb-6 text-amber-500">📋 Inventory</h2>
+      <h2 className="text-2xl font-bold mb-6 text-white-500">📋 Inventory</h2>
 
       <div className="mb-4 flex justify-between items-center">
         <input

@@ -116,13 +116,13 @@ export default function AdminInventory({ onLogout }) {
   return (
     <div className="min-h-screen pt-20 px-4 sm:px-6">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-amber-500">🧃 Admin Inventory</h2>
+        <h2 className="text-2xl font-bold text-white-500">🧃 Admin Inventory</h2>
       </div>
 
       {/* Add new product form */}
       <form
         onSubmit={handleAddProduct}
-        className="bg-gray-900/70 border border-gray-700 p-4 rounded-lg mb-8 shadow-md"
+        className="bg-gray-900/80 border border-gray-800 p-4 rounded-lg mb-8 shadow-md"
       >
         <h3 className="text-lg font-semibold mb-3 text-amber-400">
           ➕ Add New Product
@@ -259,13 +259,13 @@ export default function AdminInventory({ onLogout }) {
         </table>
       </div>
 
-      {/* 📱 Mobile Card View */}
+      {/* Mobile Card View */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:hidden">
         {products.length > 0 ? (
           products.map((p) => (
             <div
               key={p.id}
-              className="bg-gray-900/90 border border-gray-800 p-4 rounded-lg shadow-md"
+              className="bg-gray-900/90 border border-gray-900 p-4 rounded-lg shadow-md"
             >
               <h4 className="text-lg font-semibold text-amber-400 mb-2">
                 {p.name}

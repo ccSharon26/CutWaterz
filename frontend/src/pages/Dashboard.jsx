@@ -59,8 +59,8 @@ export default function Dashboard() {
     <div className="min-h-screen pt-20 px-4 sm:px-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <div className="flex items-center gap-2">
-          <Clock className="text-amber-400" />
-          <h2 className="text-2xl font-bold text-amber-500">Sales Dashboard</h2>
+          <Clock className="text-white-400" />
+          <h2 className="text-2xl font-bold text-white-500">Sales Dashboard</h2>
         </div>
         <p className="text-sm text-gray-400 hidden sm:block">{timeString}</p>
       </div>

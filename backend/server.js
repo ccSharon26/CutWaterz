@@ -9,7 +9,7 @@ import adminRoutes from "./routes/adminRoutes.js";
 dotenv.config();
 const app = express();
 
-// ⚡ CORS configuration
+// CORS configuration
 app.use(cors({
   origin: ["https://ccsharon26.github.io", "http://localhost:3000", "http://localhost", ], 
   methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
@@ -24,6 +24,6 @@ app.use("/api/products", productRoutes);
 
 const PORT = process.env.PORT || 4000;
 
-await connectDB(); // initialize DB
+await connectDB();
 
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

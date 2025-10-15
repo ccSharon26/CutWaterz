@@ -10,12 +10,12 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
 
 async function reset() {
   try {
-    console.log("⚠️ Dropping tables...");
+    console.log("Dropping tables...");
     await sequelize.query('DROP TABLE IF EXISTS "SaleItems" CASCADE;');
     await sequelize.query('DROP TABLE IF EXISTS "Sales" CASCADE;');
     await sequelize.query('DROP TABLE IF EXISTS "Products" CASCADE;');
 
-    console.log("✅ Tables dropped successfully.");
+    console.log("Tables dropped successfully.");
     await sequelize.close();
   } catch (err) {
     console.error("❌ Error dropping tables:", err);

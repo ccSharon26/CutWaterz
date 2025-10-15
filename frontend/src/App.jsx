@@ -1,23 +1,18 @@
-// src/App.jsx
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
-
 import Navbar from "./components/Navbar";
 import POS from "./pages/POS";
 import Inventory from "./pages/Inventory";
 import Dashboard from "./pages/Dashboard";
 import AdminInventory from "./pages/AdminInventory";
 import StaffInventory from "./pages/StaffInventory";
-
 import AdminGate from "./components/AdminGate";
-import { syncActions } from "./utils/offlineSync"; // Offline sync helper
+import { syncActions } from "./utils/offlineSync";
 
 function App() {
   useEffect(() => {
-    // Try sync when app loads
     syncActions();
 
-    // Re-sync whenever we go online again
     const onOnline = () => {
       console.log("🌐 Back online — syncing offline actions...");
       syncActions();
@@ -57,9 +52,9 @@ function App() {
         </Routes>
       </main>
 
-      {/* Simple mobile footer (for Android PWA) */}
+      {/* Simple mobile footer */}
       <footer className="text-center py-4 text-gray-400 text-sm bg-gray-900/60 backdrop-blur-sm">
-        <p>© {new Date().getFullYear()} CutWaterz POS | Offline-ready 🍹</p>
+        <p>© {new Date().getFullYear()} CutWaterz POS🍹</p>
       </footer>
     </div>
   );

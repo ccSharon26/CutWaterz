@@ -1,4 +1,3 @@
-// src/utils/offlineSync.js
 import { openDB } from "idb";
 //import CONFIG from "../config";
 
@@ -17,11 +16,6 @@ async function getDB() {
     },
   });
 }
-
-/**
- * Save an action to IndexedDB.
- * action = { url: string, method: 'POST'|'PATCH'|'PUT'|'DELETE', body: object }
- */
 export async function saveOfflineAction(action) {
   try {
     const db = await getDB();
@@ -32,26 +26,17 @@ export async function saveOfflineAction(action) {
   }
 }
 
-/**
- * Read all pending actions
- */
 export async function getPendingActions() {
   const db = await getDB();
   return db.getAll(STORE_NAME);
 }
 
-/**
- * Remove action by id
- */
+
 export async function removeAction(id) {
   const db = await getDB();
   return db.delete(STORE_NAME, id);
 }
 
-/**
- * Try to sync all pending actions to server.
- * This is conservative: each action is tried once; if it succeeds we remove it.
- */
 export async function syncActions() {
   const actions = await getPendingActions();
   if (!actions || actions.length === 0) return;
@@ -67,15 +52,13 @@ export async function syncActions() {
 
       if (!res.ok) {
         console.warn("Sync failed for action (server returned non-OK):", action, res.status);
-        continue; // keep it for next retry
+        continue; 
       }
 
-      // success -> remove from DB
       await removeAction(action.id);
       console.log("Synced action:", action);
     } catch (err) {
       console.error("Network/sync error for action:", action, err);
-      // network error -> keep action for later
     }
   }
 }

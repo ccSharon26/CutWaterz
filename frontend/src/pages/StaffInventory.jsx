@@ -79,7 +79,7 @@ export default function StaffInventory() {
 
   return (
     <div className="min-h-screen pt-20 px-4 sm:px-6">
-      <h2 className="text-2xl font-bold text-amber-500 mb-6">👷 Staff Inventory</h2>
+      <h2 className="text-2xl font-bold text-white-500 mb-6">👷 Staff Inventory</h2>
 
       {/* Add new product form */}
       <form
@@ -93,19 +93,19 @@ export default function StaffInventory() {
             placeholder="Product Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="p-2 rounded bg-gray-800/70 border border-gray-800 text-gray-100"
+            className="p-2 rounded bg-gray-800/70 border border-gray-900 text-gray-200"
           />
           <input
             type="number"
             placeholder="Price"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
-            className="p-2 rounded bg-gray-800/70 border border-gray-800 text-gray-100"
+            className="p-2 rounded bg-gray-800/70 border border-gray-900 text-gray-200"
           />
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="p-2 rounded bg-gray-800/70 border border-gray-800 text-gray-100"
+            className="p-2 rounded bg-gray-800/70 border border-gray-900 text-gray-200"
           >
             <option value="">Select Size</option>
             <option value="Quarter">Quarter</option>

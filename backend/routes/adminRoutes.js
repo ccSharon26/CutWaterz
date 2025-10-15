@@ -3,7 +3,7 @@ import { Product } from "../models/Index.js";
 
 const router = express.Router();
 
-// 🟢 Add new product
+// Add new product
 router.post("/products", async (req, res) => {
   try {
     const product = await Product.create(req.body);
@@ -13,7 +13,7 @@ router.post("/products", async (req, res) => {
   }
 });
 
-// 🟢 Add stock to existing product
+//  Add stock to existing product
 router.patch("/products/:id/stock", async (req, res) => {
   try {
     const product = await Product.findByPk(req.params.id);
@@ -29,7 +29,7 @@ router.patch("/products/:id/stock", async (req, res) => {
   }
 });
 
-// 🟢 Update product price (Admin only)
+// Update product price (Admin only)
 router.patch("/products/:id/price", async (req, res) => {
   try {
     const { price } = req.body;
@@ -48,7 +48,7 @@ router.patch("/products/:id/price", async (req, res) => {
   }
 });
 
-// 🟢 Delete product
+//  Delete product
 router.delete("/products/:id", async (req, res) => {
   try {
     const product = await Product.findByPk(req.params.id);

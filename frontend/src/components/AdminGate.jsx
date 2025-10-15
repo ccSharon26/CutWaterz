@@ -1,4 +1,3 @@
-// src/components/AdminGate.jsx
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -10,13 +9,13 @@ const AdminGate = ({ children }) => {
 
   const correctPassword = "12345"; // change anytime
 
-  // ✅ Check session on mount
+  // Check session on mount
   useEffect(() => {
     const auth = sessionStorage.getItem("isAdminAuthorized");
     if (auth === "true") setIsAuthorized(true);
   }, []);
 
-  // ✅ Timeout after 3 minutes of inactivity
+  // Timeout after 3 minutes of inactivity
   useEffect(() => {
     let timeout;
     const resetTimer = () => {
@@ -41,7 +40,7 @@ const AdminGate = ({ children }) => {
     };
   }, [isAuthorized, navigate]);
 
-  // ✅ Force re-auth when navigating to /admin
+  //  Force re-auth when navigating to /admin
   useEffect(() => {
     if (location.pathname === "/admin" && !isAuthorized) {
       sessionStorage.removeItem("isAdminAuthorized");
@@ -60,7 +59,7 @@ const AdminGate = ({ children }) => {
     }
   };
 
-  // ✅ Only protect /admin page
+  // Only protect /admin page
   if (location.pathname === "/admin" && !isAuthorized) {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-black/70 z-50">
