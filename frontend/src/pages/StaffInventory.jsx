@@ -84,7 +84,7 @@ export default function StaffInventory() {
       {/* Add new product form */}
       <form
         onSubmit={handleAddProduct}
-        className="bg-gray-900/70 border border-gray-700 p-4 rounded-lg mb-8 shadow-md"
+        className="bg-gray-900/90 border border-gray-800 p-4 rounded-lg mb-8 shadow-md"
       >
         <h3 className="text-lg font-semibold mb-3 text-amber-400">➕ Add New Product</h3>
         <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
@@ -93,19 +93,19 @@ export default function StaffInventory() {
             placeholder="Product Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="p-2 rounded bg-gray-800/60 border border-gray-700 text-gray-100"
+            className="p-2 rounded bg-gray-800/70 border border-gray-800 text-gray-100"
           />
           <input
             type="number"
             placeholder="Price"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
-            className="p-2 rounded bg-gray-800/60 border border-gray-700 text-gray-100"
+            className="p-2 rounded bg-gray-800/70 border border-gray-800 text-gray-100"
           />
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="p-2 rounded bg-gray-800/60 border border-gray-700 text-gray-100"
+            className="p-2 rounded bg-gray-800/70 border border-gray-800 text-gray-100"
           >
             <option value="">Select Size</option>
             <option value="Quarter">Quarter</option>
@@ -132,7 +132,7 @@ export default function StaffInventory() {
       </form>
 
       {/* Product Table (Desktop) */}
-      <div className="hidden md:block bg-gray-900/70 p-4 rounded-lg shadow-md overflow-x-auto border border-gray-700">
+      <div className="hidden md:block bg-gray-900/80 p-4 rounded-lg shadow-md overflow-x-auto border border-gray-800">
         <h3 className="text-lg font-semibold mb-4 text-amber-400">📦 Current Stock</h3>
         <table className="w-full text-sm">
           <thead className="bg-amber-500 text-black">
@@ -162,7 +162,7 @@ export default function StaffInventory() {
                         onChange={(e) =>
                           setAddQty({ ...addQty, [p.id]: e.target.value })
                         }
-                        className="w-20 text-center p-1 bg-gray-800/60 border border-gray-700 text-gray-100 rounded"
+                        className="w-20 text-center p-1 bg-gray-800/70 border border-gray-800 text-gray-100 rounded"
                       />
                       <button
                         onClick={() => handleAddStock(p.id)}
@@ -191,7 +191,7 @@ export default function StaffInventory() {
           products.map((p) => (
             <div
               key={p.id}
-              className="bg-gray-900/70 border border-gray-700 p-4 rounded-lg shadow-md"
+              className="bg-gray-900/70 border border-gray-800 p-4 rounded-lg shadow-md"
             >
               <h4 className="text-lg font-semibold text-amber-400 mb-1">{p.name}</h4>
               <p className="text-gray-300 text-sm">Category: {p.category || "—"}</p>
@@ -204,7 +204,7 @@ export default function StaffInventory() {
                   placeholder="Qty"
                   value={addQty[p.id] || ""}
                   onChange={(e) => setAddQty({ ...addQty, [p.id]: e.target.value })}
-                  className="w-20 text-center p-1 bg-gray-800/60 border border-gray-700 text-gray-100 rounded"
+                  className="w-20 text-center p-1 bg-gray-800/70 border border-gray-800 text-gray-100 rounded"
                 />
                 <button
                   onClick={() => handleAddStock(p.id)}

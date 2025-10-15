@@ -133,19 +133,19 @@ export default function AdminInventory({ onLogout }) {
             placeholder="Product Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="p-2 rounded bg-gray-800/60 border border-gray-700 text-gray-100"
+            className="p-2 rounded bg-gray-800/60 border border-gray-800 text-gray-100"
           />
           <input
             type="number"
             placeholder="Price"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
-            className="p-2 rounded bg-gray-800/60 border border-gray-700 text-gray-100"
+            className="p-2 rounded bg-gray-800/60 border border-gray-800 text-gray-100"
           />
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="p-2 rounded bg-gray-800/60 border border-gray-700 text-gray-100"
+            className="p-2 rounded bg-gray-800/60 border border-gray-800 text-gray-100"
           >
             <option value="">Select Size</option>
             <option value="Quarter">Quarter</option>
@@ -159,7 +159,7 @@ export default function AdminInventory({ onLogout }) {
             placeholder="Initial Stock"
             value={stock}
             onChange={(e) => setStock(e.target.value)}
-            className="p-2 rounded bg-gray-800/60 border border-gray-700 text-gray-100"
+            className="p-2 rounded bg-gray-800/60 border border-gray-800 text-gray-100"
           />
           <button
             type="submit"
@@ -172,7 +172,7 @@ export default function AdminInventory({ onLogout }) {
       </form>
 
       {/* Desktop Table View */}
-      <div className="hidden md:block bg-gray-900/70 p-4 rounded-lg shadow-md overflow-x-auto border border-gray-700">
+      <div className="hidden md:block bg-gray-900/80 p-4 rounded-lg shadow-md overflow-x-auto border border-gray-800">
         <h3 className="text-lg font-semibold mb-4 text-amber-400">
           📦 Current Stock
         </h3>
@@ -206,7 +206,7 @@ export default function AdminInventory({ onLogout }) {
                         onChange={(e) =>
                           setAddQty({ ...addQty, [p.id]: e.target.value })
                         }
-                        className="w-20 text-center p-1 bg-gray-800/60 border border-gray-700 text-gray-100 rounded"
+                        className="w-20 text-center p-1 bg-gray-800/80 border border-gray-800 text-gray-100 rounded"
                       />
                       <button
                         onClick={() => handleAddStock(p.id)}
@@ -225,7 +225,7 @@ export default function AdminInventory({ onLogout }) {
                         onChange={(e) =>
                           setEditPrice({ ...editPrice, [p.id]: e.target.value })
                         }
-                        className="w-20 text-center p-1 bg-gray-800/60 border border-gray-700 text-gray-100 rounded"
+                        className="w-20 text-center p-1 bg-gray-800/80 border border-gray-800 text-gray-100 rounded"
                       />
                       <button
                         onClick={() => handleEditPrice(p.id)}
@@ -265,7 +265,7 @@ export default function AdminInventory({ onLogout }) {
           products.map((p) => (
             <div
               key={p.id}
-              className="bg-gray-900/70 border border-gray-700 p-4 rounded-lg shadow-md"
+              className="bg-gray-900/90 border border-gray-800 p-4 rounded-lg shadow-md"
             >
               <h4 className="text-lg font-semibold text-amber-400 mb-2">
                 {p.name}
@@ -289,7 +289,7 @@ export default function AdminInventory({ onLogout }) {
                   onChange={(e) =>
                     setAddQty({ ...addQty, [p.id]: e.target.value })
                   }
-                  className="w-20 text-center p-1 bg-gray-800/60 border border-gray-700 text-gray-100 rounded"
+                  className="w-20 text-center p-1 bg-gray-800/80 border border-gray-700 text-gray-100 rounded"
                 />
                 <button
                   onClick={() => handleAddStock(p.id)}
@@ -307,7 +307,7 @@ export default function AdminInventory({ onLogout }) {
                   onChange={(e) =>
                     setEditPrice({ ...editPrice, [p.id]: e.target.value })
                   }
-                  className="w-20 text-center p-1 bg-gray-800/60 border border-gray-700 text-gray-100 rounded"
+                  className="w-20 text-center p-1 bg-gray-800/80 border border-gray-700 text-gray-100 rounded"
                 />
                 <button
                   onClick={() => handleEditPrice(p.id)}

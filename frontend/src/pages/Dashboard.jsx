@@ -66,7 +66,7 @@ export default function Dashboard() {
       </div>
 
       {/* Filter row: Today | This Week | Calendar */}
-      <div className="flex flex-wrap items-center gap-3 mb-6 bg-gray-900/60 p-3 rounded-lg border border-gray-700">
+      <div className="flex flex-wrap items-center gap-3 mb-6 bg-gray-900/60 p-3 rounded-lg border border-gray-800">
         <button
           onClick={() => {
             setFilter("today");
@@ -75,7 +75,7 @@ export default function Dashboard() {
           className={`px-4 py-2 rounded-md font-medium transition-all ${
             filter === "today"
               ? "bg-amber-500 text-black"
-              : "bg-gray-800 hover:bg-gray-700 text-gray-200"
+              : "bg-gray-900 hover:bg-gray-800 text-gray-200"
           }`}
         >
           Today
@@ -96,7 +96,7 @@ export default function Dashboard() {
         </button>
 
         {/* Calendar inline */}
-        <div className="flex items-center gap-2 bg-gray-800/80 p-2 rounded-lg border border-gray-700">
+        <div className="flex items-center gap-2 bg-gray-800/95 p-2 rounded-lg border border-gray-800">
           <Calendar className="text-amber-400" />
           <input
             type="date"
@@ -120,13 +120,13 @@ export default function Dashboard() {
 
       {/* Summary cards */}
       <div className="grid md:grid-cols-2 gap-4 mb-4">
-        <div className="bg-gray-900/70 p-4 rounded-md shadow-md flex justify-between items-center">
+        <div className="bg-gray-900/90 p-4 rounded-md shadow-md flex justify-between items-center">
           <p className="text-lg">
             Total Sales:{" "}
             <span className="text-amber-400 font-semibold">{filteredSales.length}</span>
           </p>
         </div>
-        <div className="bg-gray-900/70 p-4 rounded-md shadow-md flex justify-between items-center">
+        <div className="bg-gray-900/90 p-4 rounded-md shadow-md flex justify-between items-center">
           <p className="text-lg">
             Total Revenue:{" "}
             <span className="text-amber-400 font-semibold">
@@ -137,9 +137,9 @@ export default function Dashboard() {
       </div>
 
       {/* Sales Table */}
-      <div className="overflow-x-auto rounded-lg border border-gray-800 shadow-md bg-gray-900/70">
+      <div className="overflow-x-auto rounded-lg border border-gray-800 shadow-md bg-gray-900/90">
         <table className="min-w-full text-sm">
-          <thead className="bg-gray-800 text-amber-400">
+          <thead className="bg-gray-900 text-amber-400">
             <tr>
               <th className="py-2 px-4 text-left">Date</th>
               <th className="py-2 px-4 text-left">Items</th>
@@ -152,8 +152,8 @@ export default function Dashboard() {
                 <tr
                   key={sale.id || idx}
                   className={`border-t border-gray-700 ${
-                    idx % 2 === 0 ? "bg-gray-900/70" : "bg-gray-800/50"
-                  } hover:bg-gray-800/60`}
+                    idx % 2 === 0 ? "bg-gray-900/90" : "bg-gray-800/80"
+                  } hover:bg-gray-800/70`}
                 >
                   <td className="py-2 px-4">{new Date(sale.createdAt).toLocaleString()}</td>
                   <td className="py-2 px-4 space-y-1">

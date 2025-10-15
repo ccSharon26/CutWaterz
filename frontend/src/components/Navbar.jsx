@@ -1,4 +1,3 @@
-// src/components/Navbar.jsx
 import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
@@ -76,16 +75,15 @@ export default function Navbar() {
           {isOpen ? <X /> : <Menu />}
         </button>
       </div>
-
-      {/* Mobile sliding menu */}
+      {/* Mobile overlay + slide menu */}
       <div
-        className={`md:hidden fixed inset-0 z-50 transition-all duration-300 ease-in-out ${
-          isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        className={`md:hidden fixed inset-0 z-[60] transition-opacity duration-300 ease-in-out ${
+          isOpen ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
       >
-        {/* Overlay */}
+        {/* Slightly darker overlay */}
         <div
-          className={`absolute inset-0 bg-black/70 transition-opacity duration-300 ${
+          className={`absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity duration-300 ${
             isOpen ? "opacity-100" : "opacity-0"
           }`}
           onClick={() => setIsOpen(false)}
@@ -93,7 +91,7 @@ export default function Navbar() {
 
         {/* Sliding panel */}
         <div
-          className={`absolute right-0 top-0 h-full w-64 bg-darkBg border-l border-gray-800 p-4 shadow-2xl transform transition-transform duration-300 ${
+          className={`absolute right-0 top-0 h-full w-64 bg-gray-900/90 border-l border-gray-800 p-4 shadow-2xl transform transition-transform duration-300 z-[70] ${
             isOpen ? "translate-x-0" : "translate-x-full"
           }`}
         >

@@ -36,7 +36,7 @@ export default function Inventory() {
         />
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-gray-800 shadow-md bg-gray-900/70">
+      <div className="overflow-x-auto rounded-lg border border-gray-800 shadow-md bg-gray-900/80">
         <table className="min-w-full text-sm">
           <thead className="bg-gray-800 text-amber-400">
             <tr>
@@ -51,8 +51,8 @@ export default function Inventory() {
                 <tr
                   key={p.id}
                   className={`border-t border-gray-700 ${
-                    idx % 2 === 0 ? "bg-gray-900/70" : "bg-gray-800/50"
-                  } hover:bg-gray-800/60 transition`}
+                    idx % 2 === 0 ? "bg-gray-900/80" : "bg-gray-800/60"
+                  } hover:bg-gray-800/70 transition`}
                 >
                   <td className="py-2 px-4">{p.name}</td>
                   <td className="py-2 px-4 text-amber-400 font-medium">{p.price}</td>

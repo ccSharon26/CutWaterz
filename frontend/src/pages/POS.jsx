@@ -24,8 +24,6 @@ export default function POS() {
 
   useEffect(() => {
     getProducts();
-    // attempt sync when we mount if online
-    // (global sync hook in App.jsx also listens for "online" events)
   }, []);
 
   const addToCart = (product) => {
@@ -56,29 +54,24 @@ export default function POS() {
     if (cart.length === 0) return alert("Cart is empty!");
     setLoading(true);
 
-    // Build payload similar to your backend expectation
     const items = cart.map((c) => ({ id: c.id, quantity: c.quantity, price: c.price }));
 
     try {
-      // Prefer using api wrapper; it will throw if offline
       await apiRecordSale(items, total);
       alert("Sale recorded successfully!");
       setCart([]);
-      await getProducts(); // refresh stock from server
+      await getProducts();
     } catch (err) {
       console.warn("Recording sale failed (probably offline). Saving action locally to sync later.", err);
 
-      // Save action to IndexedDB for later sync
       await saveOfflineAction({
         url: `${BASE_URL}/api/sales`,
         method: "POST",
         body: { items, total },
       });
 
-      alert(
-        "No network — sale saved locally and will sync automatically when online."
-      );
-      // locally update product stock in UI so POS continues to work
+      alert("No network — sale saved locally and will sync automatically when online.");
+
       setProducts((prev) =>
         prev.map((p) => {
           const inCart = cart.find((c) => c.id === p.id);
@@ -107,16 +100,17 @@ export default function POS() {
           placeholder="Search product..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full max-w-sm p-3 rounded-lg border border-gray-700 bg-gray-900/70 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500"
+          className="w-full max-w-sm p-3 rounded-lg border border-gray-700 bg-gray-900/80 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500"
         />
       </div>
 
+      {/* Product Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
         {filteredProducts.map((product) => (
           <button
             key={product.id}
             onClick={() => addToCart(product)}
-            className="bg-gray-900/70 hover:bg-amber-900/30 border border-gray-800 p-4 rounded-xl shadow-md transition flex flex-col justify-between"
+            className="bg-gray-900/95 hover:bg-amber-900/40 border border-gray-800 p-4 rounded-xl shadow-md transition flex flex-col justify-between"
           >
             <div>
               <p className="font-semibold text-gray-100">{product.name}</p>
@@ -133,7 +127,8 @@ export default function POS() {
         ))}
       </div>
 
-      <div className="mt-6 bg-gray-900/70 p-4 rounded-lg shadow-md border border-gray-800">
+      {/* Cart Section */}
+      <div className="mt-6 bg-gray-900/95 p-4 rounded-lg shadow-md border border-gray-800">
         <h3 className="text-xl font-semibold mb-4 text-amber-500">🧾 Cart</h3>
         {cart.length === 0 ? (
           <p className="text-gray-400">No items in cart.</p>
@@ -160,7 +155,7 @@ export default function POS() {
                         onChange={(e) =>
                           updateQty(item.id, parseInt(e.target.value, 10))
                         }
-                        className="w-16 text-center p-1 border border-gray-600 bg-gray-900/70 text-gray-100 rounded"
+                        className="w-16 text-center p-1 border border-gray-600 bg-gray-900/95 text-gray-100 rounded"
                       />
                     </td>
                     <td>Ksh {item.price}</td>
@@ -173,7 +168,9 @@ export default function POS() {
         )}
 
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-6 gap-4">
-          <h3 className="text-lg font-bold text-amber-400">Total: Ksh {total.toFixed(2)}</h3>
+          <h3 className="text-lg font-bold text-amber-400">
+            Total: Ksh {total.toFixed(2)}
+          </h3>
           <button
             onClick={handleRecordSale}
             disabled={loading}
