@@ -17,7 +17,6 @@ export default function Navbar() {
     { name: "Admin", path: "/admin" },
   ];
 
-  // Hide navbar when scrolling down (mobile only)
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > lastScrollY && window.scrollY > 50) {
@@ -26,7 +25,6 @@ export default function Navbar() {
         setHidden(false);
       }
 
-      // Auto-close menu when user scrolls upward
       if (isOpen && window.scrollY < lastScrollY) {
         setIsOpen(false);
       }
@@ -42,10 +40,10 @@ export default function Navbar() {
     <nav
       className={`fixed top-0 left-0 w-full z-50 text-gray-100 shadow-md border-b border-gray-700 px-4 sm:px-6 py-3 transition-transform duration-300 ${
         hidden ? "-translate-y-full" : "translate-y-0"
-      } bg-darkBg`}
+      } bg-black/80 backdrop-blur-md`}
     >
       <div className="flex justify-between items-center">
-        <h1 className="text-lg sm:text-xl font-bold text-primary tracking-wide">
+        <h1 className="text-lg sm:text-xl font-bold text-amber-500 tracking-wide">
           CutWaterz 🍾
         </h1>
 
@@ -57,8 +55,8 @@ export default function Navbar() {
               to={link.path}
               className={`font-medium transition-colors duration-300 ${
                 currentPath === link.path
-                  ? "text-primary border-b-2 border-primary pb-1"
-                  : "text-gray-300 hover:text-primary/80"
+                  ? "text-amber-400 border-b-2 border-amber-500 pb-1"
+                  : "text-gray-300 hover:text-amber-400"
               }`}
             >
               {link.name}
@@ -68,22 +66,23 @@ export default function Navbar() {
 
         {/* Mobile button */}
         <button
-          className="md:hidden p-2 rounded focus:outline-none focus:ring-2 focus:ring-primary"
+          className="md:hidden p-2 rounded focus:outline-none focus:ring-2 focus:ring-amber-500"
           onClick={() => setIsOpen(!isOpen)}
           aria-label="Toggle menu"
         >
           {isOpen ? <X /> : <Menu />}
         </button>
       </div>
+
       {/* Mobile overlay + slide menu */}
       <div
         className={`md:hidden fixed inset-0 z-[60] transition-opacity duration-300 ease-in-out ${
           isOpen ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
       >
-        {/* Slightly darker overlay */}
+        {/* Dark overlay */}
         <div
-          className={`absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity duration-300 ${
+          className={`absolute inset-0 bg-black/85 backdrop-blur-md transition-opacity duration-300 ${
             isOpen ? "opacity-100" : "opacity-0"
           }`}
           onClick={() => setIsOpen(false)}
@@ -91,12 +90,12 @@ export default function Navbar() {
 
         {/* Sliding panel */}
         <div
-          className={`absolute right-0 top-0 h-full w-64 bg-gray-900/90 border-l border-gray-800 p-4 shadow-2xl transform transition-transform duration-300 z-[70] ${
+          className={`absolute right-0 top-0 h-full w-64 bg-gray-900/95 backdrop-blur-md border-l border-gray-800 p-4 shadow-2xl transform transition-transform duration-300 z-[70] ${
             isOpen ? "translate-x-0" : "translate-x-full"
           }`}
         >
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-bold text-primary">Menu</h2>
+            <h2 className="text-lg font-bold text-amber-500">Menu</h2>
             <button
               className="p-1 rounded focus:outline-none"
               onClick={() => setIsOpen(false)}
@@ -114,8 +113,8 @@ export default function Navbar() {
                 onClick={() => setIsOpen(false)}
                 className={`block text-base py-2 px-2 rounded transition-colors ${
                   currentPath === link.path
-                    ? "text-primary bg-gray-800"
-                    : "text-gray-300 hover:text-primary/80 hover:bg-gray-800/50"
+                    ? "text-amber-400 bg-gray-800"
+                    : "text-gray-300 hover:text-amber-400 hover:bg-gray-800/50"
                 }`}
               >
                 {link.name}
