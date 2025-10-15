@@ -1,3 +1,4 @@
+// src/components/Navbar.jsx
 import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
@@ -75,9 +76,9 @@ export default function Navbar() {
           isOpen ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
       >
-        {/* Background Overlay */}
+        {/* Dark Background Overlay */}
         <div
-          className={`absolute inset-0 bg-black/85 backdrop-blur-md transition-opacity duration-300 ${
+          className={`fixed inset-0 bg-black/95 backdrop-blur-sm transition-opacity duration-300 z-[60] ${
             isOpen ? "opacity-100" : "opacity-0"
           }`}
           onClick={() => setIsOpen(false)}
@@ -85,11 +86,11 @@ export default function Navbar() {
 
         {/* Sliding Panel */}
         <div
-          className={`absolute right-0 top-0 h-full w-64 bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950/95 backdrop-blur-md border-l border-gray-800 shadow-2xl transform transition-transform duration-300 ease-in-out z-[70] ${
+          className={`fixed right-0 top-0 h-full w-64 bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950/95 border-l border-gray-800 shadow-2xl transform transition-transform duration-300 ease-in-out z-[80] ${
             isOpen ? "translate-x-0" : "translate-x-full"
           }`}
         >
-          <div className="flex items-center justify-between mb-6 p-2">
+          <div className="flex items-center justify-between mb-6 p-3">
             <h2 className="text-lg font-bold text-amber-500">Menu</h2>
             <button
               className="p-1 rounded hover:bg-gray-800 transition"
@@ -100,7 +101,7 @@ export default function Navbar() {
             </button>
           </div>
 
-          <nav className="flex flex-col gap-3 px-2">
+          <nav className="flex flex-col gap-3 px-3">
             {links.map((link) => (
               <Link
                 key={link.name}
