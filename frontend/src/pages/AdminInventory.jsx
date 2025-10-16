@@ -3,8 +3,10 @@ import CONFIG from "../config";
 
 const BASE_URL = CONFIG.BASE_URL;
 
-export default function AdminInventory({ onLogout }) {
+export default function AdminInventory() {
   const [products, setProducts] = useState([]);
+  const [allProducts, setAllProducts] = useState([]); // keep original copy
+  const [searchTerm, setSearchTerm] = useState("");
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [stock, setStock] = useState("");
@@ -18,7 +20,8 @@ export default function AdminInventory({ onLogout }) {
       const res = await fetch(`${BASE_URL}/api/products`);
       if (!res.ok) throw new Error("Failed to fetch products");
       const data = await res.json();
-      setProducts(Array.isArray(data) ? data : []);
+      setProducts(data);
+      setAllProducts(data);
     } catch (err) {
       console.error(err);
     }
@@ -28,10 +31,25 @@ export default function AdminInventory({ onLogout }) {
     getProducts();
   }, [getProducts]);
 
+  // ✅ Filter live and reset when cleared
+  useEffect(() => {
+    if (searchTerm.trim() === "") {
+      setProducts(allProducts);
+    } else {
+      const filtered = allProducts.filter(
+        (p) =>
+          p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          (p.category &&
+            p.category.toLowerCase().includes(searchTerm.toLowerCase()))
+      );
+      setProducts(filtered);
+    }
+  }, [searchTerm, allProducts]);
+
   const handleAddProduct = async (e) => {
     e.preventDefault();
     if (!name || !price || !category)
-      return alert("⚠️ Please fill in all product details!");
+      return alert("Please fill in all product details!");
     setLoading(true);
     try {
       const res = await fetch(`${BASE_URL}/api/admin/products`, {
@@ -116,10 +134,21 @@ export default function AdminInventory({ onLogout }) {
   return (
     <div className="min-h-screen pt-20 px-4 sm:px-6">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-white-500">🧃 Admin Inventory</h2>
+        <h2 className="text-2xl font-bold text-white">🧃 Admin Inventory</h2>
       </div>
 
-      {/* Add new product form */}
+      {/* 🔍 Search bar */}
+      <div className="mb-6">
+        <input
+          type="text"
+          placeholder="🔍 Search by name or category..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full md:w-1/2 p-2 rounded bg-gray-800/60 border border-gray-700 text-gray-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+        />
+      </div>
+
+      {/* Add product form */}
       <form
         onSubmit={handleAddProduct}
         className="bg-gray-900/80 border border-gray-800 p-4 rounded-lg mb-8 shadow-md"
@@ -148,8 +177,8 @@ export default function AdminInventory({ onLogout }) {
             className="p-2 rounded bg-gray-800/60 border border-gray-800 text-gray-100"
           >
             <option value="">Select Size</option>
-            <option value="Quarter">Quarter</option>
-            <option value="Half">Half</option>
+            <option value="Quarter">250ml</option>
+            <option value="Half">500ml</option>
             <option value="750ml">750ml</option>
             <option value="1L">1L</option>
             <option value="Other">Other</option>
@@ -171,7 +200,7 @@ export default function AdminInventory({ onLogout }) {
         </div>
       </form>
 
-      {/* Desktop Table View */}
+      {/* Desktop table view */}
       <div className="hidden md:block bg-gray-900/80 p-4 rounded-lg shadow-md overflow-x-auto border border-gray-800">
         <h3 className="text-lg font-semibold mb-4 text-amber-400">
           📦 Current Stock
@@ -259,7 +288,7 @@ export default function AdminInventory({ onLogout }) {
         </table>
       </div>
 
-      {/* Mobile Card View */}
+      {/* Mobile card view */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:hidden">
         {products.length > 0 ? (
           products.map((p) => (

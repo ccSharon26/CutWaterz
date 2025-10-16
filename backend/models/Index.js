@@ -1,14 +1,7 @@
-import { Sequelize } from "sequelize";
+import { sequelize } from "./Database.js";
 import Product from "./Product.js";
 import { Sale, SaleItem } from "./Sale.js";
-import dotenv from "dotenv";
-
-dotenv.config();
-
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
-  dialect: "postgres",
-  logging: false,
-});
+import Admin from "./Admin.js";
 
 // DB connection function
 export async function connectDB() {
@@ -16,10 +9,11 @@ export async function connectDB() {
     await sequelize.authenticate();
     console.log("✅ DB connected successfully.");
 
-    // Sync models
     await Product.sync();
     await Sale.sync();
     await SaleItem.sync();
+    await Admin.sync();
+
     console.log("✅ All models synced successfully.");
   } catch (error) {
     console.error("❌ DB connection error:", error);
@@ -33,5 +27,5 @@ SaleItem.belongsTo(Sale, { foreignKey: "saleId" });
 Product.hasMany(SaleItem, { foreignKey: "productId", onDelete: "CASCADE" });
 SaleItem.belongsTo(Product, { foreignKey: "productId" });
 
-// Export models & sequelize instance
-export { sequelize, Product, Sale, SaleItem };
+// Export
+export { sequelize, Product, Sale, SaleItem, Admin };

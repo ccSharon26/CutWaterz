@@ -26,15 +26,13 @@ function App() {
 
   return (
     <div
-      className="min-h-screen text-gray-100 overflow-x-hidden flex flex-col relative"
+      className="min-h-screen text-gray-100 overflow-x-hidden flex flex-col relative bg-fixed bg-cover bg-center"
       style={{
         backgroundImage: `url(${process.env.PUBLIC_URL}/background.png)`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
       }}
     >
       <Navbar />
-  
+
       <main className="flex-1 pt-16 px-4 sm:px-6 pb-10 max-w-7xl mx-auto w-full">
         <Routes>
           <Route path="/" element={<POS />} />
@@ -52,7 +50,6 @@ function App() {
         </Routes>
       </main>
 
-      {/* Simple mobile footer */}
       <footer className="text-center py-4 text-gray-400 text-sm bg-gray-900/60 backdrop-blur-sm">
         <p>© {new Date().getFullYear()} CutWaterz POS🍹</p>
       </footer>

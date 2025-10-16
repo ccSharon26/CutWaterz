@@ -5,6 +5,8 @@ const BASE_URL = CONFIG.BASE_URL;
 
 export default function StaffInventory() {
   const [products, setProducts] = useState([]);
+  const [allProducts, setAllProducts] = useState([]); // original copy to reset search
+  const [searchTerm, setSearchTerm] = useState("");
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [stock, setStock] = useState("");
@@ -17,7 +19,9 @@ export default function StaffInventory() {
       const res = await fetch(`${BASE_URL}/api/products`);
       if (!res.ok) throw new Error("Failed to fetch products");
       const data = await res.json();
-      setProducts(Array.isArray(data) ? data : []);
+      const list = Array.isArray(data) ? data : [];
+      setProducts(list);
+      setAllProducts(list);
     } catch (err) {
       console.error(err);
     }
@@ -26,6 +30,21 @@ export default function StaffInventory() {
   useEffect(() => {
     getProducts();
   }, [getProducts]);
+
+  // Search logic: live filter and reset when cleared
+  useEffect(() => {
+    if (searchTerm.trim() === "") {
+      setProducts(allProducts);
+    } else {
+      const q = searchTerm.toLowerCase();
+      const filtered = allProducts.filter(
+        (p) =>
+          (p.name && p.name.toLowerCase().includes(q)) ||
+          (p.category && p.category.toLowerCase().includes(q))
+      );
+      setProducts(filtered);
+    }
+  }, [searchTerm, allProducts]);
 
   const handleAddProduct = async (e) => {
     e.preventDefault();
@@ -49,7 +68,7 @@ export default function StaffInventory() {
       setPrice("");
       setStock("");
       setCategory("");
-      getProducts();
+      await getProducts();
     } catch (err) {
       console.error(err);
       alert("Failed to add product.");
@@ -70,7 +89,7 @@ export default function StaffInventory() {
       if (!res.ok) throw new Error("Failed to update stock");
       alert("Stock updated!");
       setAddQty({ ...addQty, [id]: "" });
-      getProducts();
+      await getProducts();
     } catch (err) {
       console.error(err);
       alert("Failed to update stock.");
@@ -80,6 +99,17 @@ export default function StaffInventory() {
   return (
     <div className="min-h-screen pt-20 px-4 sm:px-6">
       <h2 className="text-2xl font-bold text-white-500 mb-6">👷 Staff Inventory</h2>
+
+      {/* 🔍 Search Bar (mobile + desktop) */}
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="🔍 Search by name or category..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full md:w-1/2 p-2 rounded bg-gray-800/70 border border-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-500"
+        />
+      </div>
 
       {/* Add new product form */}
       <form
@@ -108,8 +138,8 @@ export default function StaffInventory() {
             className="p-2 rounded bg-gray-800/70 border border-gray-900 text-gray-200"
           >
             <option value="">Select Size</option>
-            <option value="Quarter">Quarter</option>
-            <option value="Half">Half</option>
+            <option value="Quarter">250ml</option>
+            <option value="Half">500ml</option>
             <option value="750ml">750ml</option>
             <option value="1L">1L</option>
             <option value="Other">Other</option>
