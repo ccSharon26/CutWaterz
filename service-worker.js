@@ -6,10 +6,10 @@ const STATIC_ASSETS = [
   "./manifest.json",
   "./favicon.ico",
   "./logo192.png",
-  "./logo512.png",
+  "./logo512.png"
 ];
 
-// Install event: cache static assets
+// Install: cache static assets
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(async (cache) => {
@@ -24,7 +24,7 @@ self.addEventListener("install", (event) => {
   self.skipWaiting();
 });
 
-// Activate: clean old caches
+// Activate: remove old caches
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
@@ -34,30 +34,51 @@ self.addEventListener("activate", (event) => {
   clients.claim();
 });
 
-// Fetch: cache-first for static, network-first for API
+// Fetch: handle static files and API requests safely
 self.addEventListener("fetch", (event) => {
-  const url = new URL(event.request.url);
+  const requestUrl = new URL(event.request.url);
 
   // Network-first for API requests
-  if (url.origin.includes("railway.app")) {
-    event.respondWith(fetch(event.request).catch(() => caches.match(event.request)));
+  if (requestUrl.origin.includes("railway.app")) {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          // Only cache successful GET responses if needed
+          return response;
+        })
+        .catch(() =>
+          // Return a valid fallback response if fetch fails
+          new Response(JSON.stringify({ error: "Offline or server unreachable" }), {
+            status: 503,
+            headers: { "Content-Type": "application/json" }
+          })
+        )
+    );
     return;
   }
 
-  // Cache-first for static files
+  // Cache-first for static GET requests
   if (event.request.method === "GET") {
     event.respondWith(
-      caches.match(event.request).then((cached) => {
-        if (cached) return cached;
+      caches.match(event.request).then((cachedResponse) => {
+        if (cachedResponse) return cachedResponse;
 
         return fetch(event.request)
           .then((response) => {
-            if (!response || response.status !== 200 || response.type !== "basic") return response;
-            const clone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+            if (!response || response.status !== 200 || response.type !== "basic") {
+              return response;
+            }
+
+            const clonedResponse = response.clone();
+            caches.open(CACHE_NAME).then((cache) =>
+              cache.put(event.request, clonedResponse)
+            );
             return response;
           })
-          .catch(() => caches.match("./index.html"));
+          .catch(() =>
+            // Return index.html fallback for navigation requests
+            caches.match("./index.html")
+          );
       })
     );
   }
