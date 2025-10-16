@@ -1,11 +1,12 @@
 import { useEffect, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import CONFIG from "../config";
 
 const BASE_URL = CONFIG.BASE_URL;
 
 export default function AdminInventory() {
   const [products, setProducts] = useState([]);
-  const [allProducts, setAllProducts] = useState([]); // keep original copy
+  const [allProducts, setAllProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
@@ -14,6 +15,8 @@ export default function AdminInventory() {
   const [addQty, setAddQty] = useState({});
   const [editPrice, setEditPrice] = useState({});
   const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   const getProducts = useCallback(async () => {
     try {
@@ -31,7 +34,7 @@ export default function AdminInventory() {
     getProducts();
   }, [getProducts]);
 
-  // ✅ Filter live and reset when cleared
+  // Filter live
   useEffect(() => {
     if (searchTerm.trim() === "") {
       setProducts(allProducts);
@@ -45,6 +48,13 @@ export default function AdminInventory() {
       setProducts(filtered);
     }
   }, [searchTerm, allProducts]);
+
+  // Logout
+  const handleLogout = () => {
+    sessionStorage.removeItem("isAdminAuthorized");
+    sessionStorage.removeItem("adminAuthExpiry");
+    navigate("/"); // redirect to POS/root
+  };
 
   const handleAddProduct = async (e) => {
     e.preventDefault();
@@ -133,11 +143,18 @@ export default function AdminInventory() {
 
   return (
     <div className="min-h-screen pt-20 px-4 sm:px-6">
-      <div className="flex justify-between items-center mb-6">
+      {/* Sticky header with logout */}
+      <div className="sticky top-0 z-50 bg-gray-900/95 backdrop-blur-md flex justify-between items-center p-4 border-b border-gray-800 mb-6">
         <h2 className="text-2xl font-bold text-white">🧃 Admin Inventory</h2>
+        <button
+          onClick={handleLogout}
+          className="bg-red-600 text-white px-4 py-2 rounded font-semibold hover:bg-red-700 transition"
+        >
+          Logout
+        </button>
       </div>
 
-      {/* 🔍 Search bar */}
+      {/* Search */}
       <div className="mb-6">
         <input
           type="text"
@@ -148,7 +165,7 @@ export default function AdminInventory() {
         />
       </div>
 
-      {/* Add product form */}
+      {/* Add Product Form */}
       <form
         onSubmit={handleAddProduct}
         className="bg-gray-900/80 border border-gray-800 p-4 rounded-lg mb-8 shadow-md"
@@ -200,7 +217,7 @@ export default function AdminInventory() {
         </div>
       </form>
 
-      {/* Desktop table view */}
+      {/* Desktop Table */}
       <div className="hidden md:block bg-gray-900/80 p-4 rounded-lg shadow-md overflow-x-auto border border-gray-800">
         <h3 className="text-lg font-semibold mb-4 text-amber-400">
           📦 Current Stock
@@ -276,10 +293,7 @@ export default function AdminInventory() {
               ))
             ) : (
               <tr>
-                <td
-                  colSpan="7"
-                  className="p-3 text-center text-gray-400 italic"
-                >
+                <td colSpan="7" className="p-3 text-center text-gray-400 italic">
                   No products found
                 </td>
               </tr>
@@ -288,7 +302,7 @@ export default function AdminInventory() {
         </table>
       </div>
 
-      {/* Mobile card view */}
+      {/* Mobile Card View */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:hidden">
         {products.length > 0 ? (
           products.map((p) => (
@@ -296,9 +310,7 @@ export default function AdminInventory() {
               key={p.id}
               className="bg-gray-900/90 border border-gray-900 p-4 rounded-lg shadow-md"
             >
-              <h4 className="text-lg font-semibold text-amber-400 mb-2">
-                {p.name}
-              </h4>
+              <h4 className="text-lg font-semibold text-amber-400 mb-2">{p.name}</h4>
               <p className="text-sm text-gray-300 mb-1">
                 <strong>Category:</strong> {p.category || "—"}
               </p>
