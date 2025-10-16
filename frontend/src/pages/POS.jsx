@@ -28,7 +28,8 @@ export default function POS() {
     if (product.stock <= 0) return alert("Out of stock!");
     const existing = cart.find((item) => item.id === product.id);
     if (existing) {
-      if (existing.quantity >= product.stock) return alert("Not enough stock!");
+      if (existing.quantity >= product.stock)
+        return alert("Not enough stock!");
       setCart(
         cart.map((item) =>
           item.id === product.id
@@ -43,33 +44,42 @@ export default function POS() {
 
   const updateQty = (id, qty) => {
     if (qty < 1) return setCart(cart.filter((item) => item.id !== id));
-    setCart(cart.map((item) => (item.id === id ? { ...item, quantity: qty } : item)));
+    setCart(
+      cart.map((item) => (item.id === id ? { ...item, quantity: qty } : item))
+    );
   };
 
-  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const total = cart.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
 
   const handleRecordSale = async () => {
     if (cart.length === 0) return alert("Cart is empty!");
     setLoading(true);
 
-    const items = cart.map((c) => ({ id: c.id, quantity: c.quantity, price: c.price }));
+    const items = cart.map((c) => ({
+      id: c.id,
+      quantity: c.quantity,
+      price: c.price,
+    }));
 
     try {
       await apiRecordSale(items, total);
-      alert("Sale recorded successfully!");
+      alert("✅ Sale recorded successfully!");
       setCart([]);
       await getProducts();
     } catch (err) {
-      console.warn("Recording sale failed (probably offline). Saving action locally to sync later.", err);
-
+      console.warn("Recording sale failed (probably offline).", err);
       await saveOfflineAction({
         url: `${BASE_URL}/api/sales`,
         method: "POST",
         body: { items, total },
       });
 
-      alert("No network — sale saved locally and will sync automatically when online.");
+      alert("No network — sale saved locally and will sync when online.");
 
+      // reduce stock locally for offline
       setProducts((prev) =>
         prev.map((p) => {
           const inCart = cart.find((c) => c.id === p.id);
@@ -90,8 +100,9 @@ export default function POS() {
 
   return (
     <div className="min-h-screen pt-20 p-4">
-      <h2 className="text-2xl font-bold mb-6 text-white-500">🍹 CutWaterz POS</h2>
+      <h2 className="text-2xl font-bold mb-6 text-white">🍹 CutWaterz POS</h2>
 
+      {/* Search */}
       <div className="mb-6">
         <input
           type="text"
@@ -108,7 +119,7 @@ export default function POS() {
           <button
             key={product.id}
             onClick={() => addToCart(product)}
-            className="bg-gray-900/95 hover:bg-amber-900/40 border border-gray-800 p-4 rounded-xl shadow-md transition flex flex-col justify-between"
+            className="bg-gray-900/90 hover:bg-gray-800 active:bg-gray-700 border border-gray-800 p-4 rounded-xl shadow-sm transition-all duration-150 flex flex-col justify-between hover:scale-[1.02] focus:ring-2 focus:ring-amber-500/50"
           >
             <div>
               <p className="font-semibold text-gray-100">{product.name}</p>
@@ -128,6 +139,7 @@ export default function POS() {
       {/* Cart Section */}
       <div className="mt-6 bg-gray-900/95 p-4 rounded-lg shadow-md border border-gray-800">
         <h3 className="text-xl font-semibold mb-4 text-amber-500">🧾 Cart</h3>
+
         {cart.length === 0 ? (
           <p className="text-gray-400">No items in cart.</p>
         ) : (
@@ -139,6 +151,7 @@ export default function POS() {
                   <th className="p-2">Qty</th>
                   <th className="p-2">Price</th>
                   <th className="p-2">Subtotal</th>
+                  <th className="p-2 text-center">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -158,6 +171,16 @@ export default function POS() {
                     </td>
                     <td>Ksh {item.price}</td>
                     <td>Ksh {(item.price * item.quantity).toFixed(2)}</td>
+                    <td className="text-center">
+                      <button
+                        onClick={() =>
+                          setCart(cart.filter((c) => c.id !== item.id))
+                        }
+                        className="text-red-500 hover:text-red-400 transition font-semibold"
+                      >
+                        ❌
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
