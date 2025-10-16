@@ -90,7 +90,7 @@ export default function POS() {
 
   return (
     <div className="min-h-screen pt-20 p-4">
-      <h2 className="text-2xl font-bold mb-6 text-white-500">🍹 CutWaterz POS Terminal</h2>
+      <h2 className="text-2xl font-bold mb-6 text-white-500">🍹 CutWaterz POS</h2>
 
       <div className="mb-6">
         <input
