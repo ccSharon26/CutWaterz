@@ -30,9 +30,7 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
       Promise.all(
-        keys
-          .filter((key) => key !== CACHE_NAME)
-          .map((key) => caches.delete(key))
+        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
       )
     )
   );
@@ -43,16 +41,17 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const requestUrl = new URL(event.request.url);
 
-  // Network-first for API calls
+  // Network-first for API calls (Railway)
   if (requestUrl.origin.includes("railway.app")) {
     event.respondWith(
       fetch(event.request)
         .then((response) => response)
-        .catch(() =>
-          new Response(JSON.stringify({ error: "Offline or server unreachable" }), {
-            status: 503,
-            headers: { "Content-Type": "application/json" }
-          })
+        .catch(
+          () =>
+            new Response(JSON.stringify({ error: "Offline or server unreachable" }), {
+              status: 503,
+              headers: { "Content-Type": "application/json" }
+            })
         )
     );
     return;
