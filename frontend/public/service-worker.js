@@ -1,13 +1,13 @@
 /* eslint-disable no-restricted-globals */
-const CACHE_NAME = "cutwaterz-cache-v6";
+const CACHE_NAME = "cutwaterz-cache-v7";
 const STATIC_ASSETS = [
-  "/",
-  "/index.html",
-  "/manifest.json",
-  "/favicon.ico",
-  "/logo180.png",
-  "/logo192.png",
-  "/logo512.png"
+  "./",
+  "./index.html",
+  "./manifest.json",
+  "./favicon.ico",
+  "./logo180.png",
+  "./logo192.png",
+  "./logo512.png"
 ];
 
 // 🧱 Install: Cache static assets
@@ -29,9 +29,7 @@ self.addEventListener("install", (event) => {
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(
-        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
-      )
+      Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key)))
     )
   );
   clients.claim();
@@ -70,12 +68,10 @@ self.addEventListener("fetch", (event) => {
             }
 
             const clonedResponse = response.clone();
-            caches.open(CACHE_NAME).then((cache) =>
-              cache.put(event.request, clonedResponse)
-            );
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clonedResponse));
             return response;
           })
-          .catch(() => caches.match("/index.html"));
+          .catch(() => caches.match("./index.html"));
       })
     );
   }
