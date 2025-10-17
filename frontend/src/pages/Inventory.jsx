@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { fetchProducts } from "../api"; // fetchProducts uses BASE_URL internally
+import { useEffect, useState, useMemo } from "react";
+import { fetchProducts } from "../api";
 
 export default function Inventory() {
   const [products, setProducts] = useState([]);
@@ -16,6 +16,15 @@ export default function Inventory() {
     };
     getProducts();
   }, []);
+
+  // 🔢 Calculate total expected value
+  const totalExpected = useMemo(() => {
+    return products.reduce((sum, p) => {
+      const price = Number(p.price) || 0;
+      const stock = Number(p.stock) || 0;
+      return sum + price * stock;
+    }, 0);
+  }, [products]);
 
   const filteredProducts = products.filter(
     (p) =>
@@ -36,6 +45,14 @@ export default function Inventory() {
           onChange={(e) => setSearch(e.target.value)}
           className="p-2 w-full max-w-sm rounded bg-gray-900/70 border border-gray-700 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500"
         />
+      </div>
+
+      {/* 💰 Total Expected Value */}
+      <div className="mb-4 p-3 bg-gray-800/70 rounded-lg text-amber-400 font-semibold shadow">
+        Total Expected Stock Value:{" "}
+        <span className="text-white font-bold">
+          Ksh {totalExpected.toLocaleString()}
+        </span>
       </div>
 
       {/* 🧾 Product Table */}

@@ -102,42 +102,8 @@ export default function POS() {
     <div className="min-h-screen pt-20 p-4">
       <h2 className="text-2xl font-bold mb-6 text-white">🍹 CutWaterz POS</h2>
 
-      {/* Search */}
-      <div className="mb-6">
-        <input
-          type="text"
-          placeholder="Search product..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full max-w-sm p-3 rounded-lg border border-gray-700 bg-gray-900/80 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500"
-        />
-      </div>
-
-      {/* Product Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-        {filteredProducts.map((product) => (
-          <button
-            key={product.id}
-            onClick={() => addToCart(product)}
-            className="bg-gray-900/90 hover:bg-gray-800 active:bg-gray-700 border border-gray-800 p-4 rounded-xl shadow-sm transition-all duration-150 flex flex-col justify-between hover:scale-[1.02] focus:ring-2 focus:ring-amber-500/50"
-          >
-            <div>
-              <p className="font-semibold text-gray-100">{product.name}</p>
-              <p className="text-sm text-amber-400">Ksh {product.price}</p>
-            </div>
-            <p
-              className={`text-xs mt-2 ${
-                product.stock > 0 ? "text-gray-400" : "text-red-500"
-              }`}
-            >
-              Stock: {product.stock}
-            </p>
-          </button>
-        ))}
-      </div>
-
-      {/* Cart Section */}
-      <div className="mt-6 bg-gray-900/95 p-4 rounded-lg shadow-md border border-gray-800">
+      {/* 🧾 Cart Section (moved to top) */}
+      <div className="mb-8 bg-gray-900/95 p-4 rounded-lg shadow-md border border-gray-800">
         <h3 className="text-xl font-semibold mb-4 text-amber-500">🧾 Cart</h3>
 
         {cart.length === 0 ? (
@@ -200,6 +166,40 @@ export default function POS() {
             {loading ? "Saving..." : "Record Sale"}
           </button>
         </div>
+      </div>
+
+      {/* 🔍 Search */}
+      <div className="mb-6">
+        <input
+          type="text"
+          placeholder="Search product..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full max-w-sm p-3 rounded-lg border border-gray-700 bg-gray-900/80 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500"
+        />
+      </div>
+
+      {/* 🛍️ Product Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+        {filteredProducts.map((product) => (
+          <button
+            key={product.id}
+            onClick={() => addToCart(product)}
+            className="bg-gray-900/90 hover:bg-gray-800 active:bg-gray-700 border border-gray-800 p-4 rounded-xl shadow-sm transition-all duration-150 flex flex-col justify-between hover:scale-[1.02] focus:ring-2 focus:ring-amber-500/50"
+          >
+            <div>
+              <p className="font-semibold text-gray-100">{product.name}</p>
+              <p className="text-sm text-amber-400">Ksh {product.price}</p>
+            </div>
+            <p
+              className={`text-xs mt-2 ${
+                product.stock > 0 ? "text-gray-400" : "text-red-500"
+              }`}
+            >
+              Stock: {product.stock}
+            </p>
+          </button>
+        ))}
       </div>
     </div>
   );
