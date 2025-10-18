@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react"; 
 import { fetchProducts, recordSale as apiRecordSale } from "../api";
 import { saveOfflineAction } from "../utils/offlineSync";
 
@@ -7,7 +7,7 @@ export default function POS() {
   const [search, setSearch] = useState("");
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState("cash"); // default
+  const [paymentMethod, setPaymentMethod] = useState(""); // must choose explicitly
 
   useEffect(() => {
     fetchProducts().then(setProducts).catch(console.error);
@@ -40,6 +40,8 @@ export default function POS() {
 
   const handleRecordSale = async () => {
     if (cart.length === 0) return alert("Cart is empty!");
+    if (!paymentMethod) return alert("Please select a payment method!"); // ✅ force choice
+
     setLoading(true);
 
     const items = cart.map((c) => ({
@@ -63,7 +65,6 @@ export default function POS() {
       });
       alert("No network — sale saved locally and will sync when online.");
 
-      // reduce stock locally
       setProducts((prev) =>
         prev.map((p) => {
           const inCart = cart.find((c) => c.id === p.id);
@@ -77,10 +78,9 @@ export default function POS() {
     }
   };
 
-  const filteredProducts = products.filter(
-    (p) =>
-      p.name.toLowerCase().includes(search.toLowerCase()) ||
-      (p.category && p.category.toLowerCase().includes(search.toLowerCase()))
+  const filteredProducts = products.filter((p) =>
+    p.name.toLowerCase().includes(search.toLowerCase()) ||
+    (p.category && p.category.toLowerCase().includes(search.toLowerCase()))
   );
 
   return (
@@ -137,17 +137,31 @@ export default function POS() {
           </div>
         )}
 
-        {/* Payment Method */}
+        {/* Payment Method as radio buttons */}
         <div className="mt-4 flex items-center gap-4">
           <label className="text-gray-200 font-semibold">Payment Method:</label>
-          <select
-            value={paymentMethod}
-            onChange={(e) => setPaymentMethod(e.target.value)}
-            className="bg-gray-800 text-gray-100 px-2 py-1 rounded"
-          >
-            <option value="cash">Cash</option>
-            <option value="mpesa">Mpesa</option>
-          </select>
+          <div className="flex gap-4">
+            <label className="flex items-center gap-1">
+              <input
+                type="radio"
+                name="paymentMethod"
+                value="cash"
+                checked={paymentMethod === "cash"}
+                onChange={(e) => setPaymentMethod(e.target.value)}
+              />
+              Cash
+            </label>
+            <label className="flex items-center gap-1">
+              <input
+                type="radio"
+                name="paymentMethod"
+                value="mpesa"
+                checked={paymentMethod === "mpesa"}
+                onChange={(e) => setPaymentMethod(e.target.value)}
+              />
+              Mpesa
+            </label>
+          </div>
         </div>
 
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-6 gap-4">
@@ -185,7 +199,7 @@ export default function POS() {
           >
             <div>
               <p className="font-semibold text-gray-100">{product.name}</p>
-              <p className="text-xs text-gray-400">{product.category || "—"}</p> {/* ✅ category */}
+              <p className="text-xs text-gray-400">{product.category || "—"}</p>
               <p className="text-sm text-amber-400">Ksh {product.price}</p>
             </div>
             <p
