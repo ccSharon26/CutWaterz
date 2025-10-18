@@ -4,6 +4,7 @@ import Product from "./Product.js";
 
 const Sale = sequelize.define("Sale", {
   total: { type: DataTypes.FLOAT, allowNull: false },
+  paymentMethod: { type: DataTypes.STRING, allowNull: false, defaultValue: "cash" }, 
 });
 
 const SaleItem = sequelize.define("SaleItem", {

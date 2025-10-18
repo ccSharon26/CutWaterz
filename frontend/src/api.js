@@ -37,11 +37,12 @@ export const stockIn = async (id, qty) => {
 };
 
 // ================= Sales / POS =================
-export const recordSale = async (items, total) => {
+// Updated to include paymentMethod
+export const recordSale = async (items, total, paymentMethod) => {
   const res = await fetch(`${BASE_URL}/api/sales`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ items, total }),
+    body: JSON.stringify({ items, total, paymentMethod }),
   });
   if (!res.ok) throw new Error("Failed to record sale");
   return await res.json();

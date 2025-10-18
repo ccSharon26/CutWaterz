@@ -55,6 +55,15 @@ export default function Dashboard() {
 
   const totalRevenue = filteredSales.reduce((acc, s) => acc + (s.total || 0), 0);
 
+  // 💰 Cash vs Mpesa
+  const totalCash = filteredSales
+    .filter((s) => s.paymentMethod === "cash")
+    .reduce((acc, s) => acc + (s.total || 0), 0);
+
+  const totalMpesa = filteredSales
+    .filter((s) => s.paymentMethod === "mpesa")
+    .reduce((acc, s) => acc + (s.total || 0), 0);
+
   return (
     <div className="min-h-screen pt-20 px-4 sm:px-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
@@ -65,7 +74,7 @@ export default function Dashboard() {
         <p className="text-sm text-gray-400 hidden sm:block">{timeString}</p>
       </div>
 
-      {/* Filter row: Today | This Week | Calendar */}
+      {/* Filter row */}
       <div className="flex flex-wrap items-center gap-3 mb-6 bg-gray-900/60 p-3 rounded-lg border border-gray-800">
         <button
           onClick={() => {
@@ -95,7 +104,6 @@ export default function Dashboard() {
           This Week
         </button>
 
-        {/* Calendar inline */}
         <div className="flex items-center gap-2 bg-gray-800/95 p-2 rounded-lg border border-gray-800">
           <Calendar className="text-amber-400" />
           <input
@@ -119,18 +127,37 @@ export default function Dashboard() {
       </div>
 
       {/* Summary cards */}
-      <div className="grid md:grid-cols-2 gap-4 mb-4">
+      <div className="grid md:grid-cols-4 gap-4 mb-4">
         <div className="bg-gray-900/90 p-4 rounded-md shadow-md flex justify-between items-center">
           <p className="text-lg">
             Total Sales:{" "}
             <span className="text-amber-400 font-semibold">{filteredSales.length}</span>
           </p>
         </div>
+
         <div className="bg-gray-900/90 p-4 rounded-md shadow-md flex justify-between items-center">
           <p className="text-lg">
             Total Revenue:{" "}
             <span className="text-amber-400 font-semibold">
               Ksh {totalRevenue.toLocaleString()}
+            </span>
+          </p>
+        </div>
+
+        <div className="bg-gray-900/90 p-4 rounded-md shadow-md flex justify-between items-center">
+          <p className="text-lg">
+            Cash Sales:{" "}
+            <span className="text-amber-400 font-semibold">
+              Ksh {totalCash.toLocaleString()}
+            </span>
+          </p>
+        </div>
+
+        <div className="bg-gray-900/90 p-4 rounded-md shadow-md flex justify-between items-center">
+          <p className="text-lg">
+            Mpesa Sales:{" "}
+            <span className="text-amber-400 font-semibold">
+              Ksh {totalMpesa.toLocaleString()}
             </span>
           </p>
         </div>
@@ -144,6 +171,7 @@ export default function Dashboard() {
               <th className="py-2 px-4 text-left">Date</th>
               <th className="py-2 px-4 text-left">Items</th>
               <th className="py-2 px-4 text-left">Total (Ksh)</th>
+              <th className="py-2 px-4 text-left">Payment</th>
             </tr>
           </thead>
           <tbody>
@@ -169,11 +197,12 @@ export default function Dashboard() {
                   <td className="py-2 px-4 text-amber-400 font-semibold">
                     {(sale.total || 0).toFixed(2)}
                   </td>
+                  <td className="py-2 px-4 capitalize">{sale.paymentMethod || "-"}</td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="3" className="py-3 text-center text-gray-400 italic">
+                <td colSpan="4" className="py-3 text-center text-gray-400 italic">
                   No sales found
                 </td>
               </tr>

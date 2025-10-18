@@ -6,10 +6,10 @@ const router = express.Router();
 // Record a sale
 router.post("/", async (req, res) => {
   try {
-    const { items, total } = req.body;
+    const { items, total, paymentMethod } = req.body; // NEW
 
     // Create the sale
-    const sale = await Sale.create({ total });
+    const sale = await Sale.create({ total, paymentMethod }); // UPDATED
 
     // Create sale items and reduce product stock
     for (const item of items) {
@@ -36,9 +36,7 @@ router.post("/", async (req, res) => {
       ],
     });
 
-    // Return the full sale object
     res.json(saleWithItems);
-
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });
@@ -67,19 +65,13 @@ router.get("/", async (req, res) => {
 // Delete all sales (use carefully)
 router.delete("/delete-all", async (req, res) => {
   try {
-    // Delete all SaleItems first (because of foreign key constraint)
     await SaleItem.destroy({ where: {} });
-
-    // Then delete all Sales
     await Sale.destroy({ where: {} });
-
     res.json({ message: "All sales and sale items deleted successfully." });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });
   }
 });
-
-
 
 export default router;
