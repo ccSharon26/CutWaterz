@@ -42,7 +42,7 @@ export default function Dashboard() {
       const weekAgo = new Date(now);
       weekAgo.setDate(now.getDate() - 7);
       filtered = sales.filter((s) => new Date(s.createdAt) >= weekAgo);
-    } else {
+    } else if (filter === "all") {
       filtered = sales;
     }
 
@@ -54,12 +54,9 @@ export default function Dashboard() {
   }, [sales, filter, selectedDate, applyFilter]);
 
   const totalRevenue = filteredSales.reduce((acc, s) => acc + (s.total || 0), 0);
-
-  // 💰 Cash vs Mpesa
   const totalCash = filteredSales
     .filter((s) => s.paymentMethod === "cash")
     .reduce((acc, s) => acc + (s.total || 0), 0);
-
   const totalMpesa = filteredSales
     .filter((s) => s.paymentMethod === "mpesa")
     .reduce((acc, s) => acc + (s.total || 0), 0);
@@ -104,6 +101,20 @@ export default function Dashboard() {
           This Week
         </button>
 
+        <button
+          onClick={() => {
+            setFilter("all");
+            setSelectedDate("");
+          }}
+          className={`px-4 py-2 rounded-md font-medium transition-all ${
+            filter === "all"
+              ? "bg-amber-500 text-black"
+              : "bg-gray-800 hover:bg-gray-700 text-gray-200"
+          }`}
+        >
+          All Sales
+        </button>
+
         <div className="flex items-center gap-2 bg-gray-800/95 p-2 rounded-lg border border-gray-800">
           <Calendar className="text-amber-400" />
           <input
@@ -113,7 +124,7 @@ export default function Dashboard() {
               setSelectedDate(e.target.value);
               setFilter("");
             }}
-            className="bg-transparent outline-none text-gray-100 cursor-pointer text-sm"
+            className="bg-gray-700 text-amber-400 font-semibold rounded px-2 py-1 outline-none cursor-pointer text-sm"
           />
           {selectedDate && (
             <button
@@ -130,8 +141,7 @@ export default function Dashboard() {
       <div className="grid md:grid-cols-4 gap-4 mb-4">
         <div className="bg-gray-900/90 p-4 rounded-md shadow-md flex justify-between items-center">
           <p className="text-lg">
-            Total Sales:{" "}
-            <span className="text-amber-400 font-semibold">{filteredSales.length}</span>
+            Total Sales: <span className="text-amber-400 font-semibold">{filteredSales.length}</span>
           </p>
         </div>
 
@@ -147,18 +157,14 @@ export default function Dashboard() {
         <div className="bg-gray-900/90 p-4 rounded-md shadow-md flex justify-between items-center">
           <p className="text-lg">
             Cash Sales:{" "}
-            <span className="text-amber-400 font-semibold">
-              Ksh {totalCash.toLocaleString()}
-            </span>
+            <span className="text-amber-400 font-semibold">Ksh {totalCash.toLocaleString()}</span>
           </p>
         </div>
 
         <div className="bg-gray-900/90 p-4 rounded-md shadow-md flex justify-between items-center">
           <p className="text-lg">
             Mpesa Sales:{" "}
-            <span className="text-amber-400 font-semibold">
-              Ksh {totalMpesa.toLocaleString()}
-            </span>
+            <span className="text-amber-400 font-semibold">Ksh {totalMpesa.toLocaleString()}</span>
           </p>
         </div>
       </div>
@@ -188,9 +194,7 @@ export default function Dashboard() {
                     {sale.SaleItems?.map((item) => (
                       <div key={item.id}>
                         {item.quantity}×{" "}
-                        <span className="text-amber-400">
-                          {item.Product?.name || "Unnamed Product"}
-                        </span>
+                        <span className="text-amber-400">{item.Product?.name || "Unnamed Product"}</span>
                       </div>
                     ))}
                   </td>

@@ -7,7 +7,7 @@ export default function POS() {
   const [search, setSearch] = useState("");
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState(""); // must choose explicitly
+  const [paymentMethod, setPaymentMethod] = useState("");
 
   useEffect(() => {
     fetchProducts().then(setProducts).catch(console.error);
