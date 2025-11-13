@@ -19,7 +19,7 @@ export default function AdminGate({ children }) {
   const authRef = useRef(isAuthorized);
   authRef.current = isAuthorized;
 
-  // --- Initialize auth from sessionStorage (keeps login across refresh while expiry valid)
+  // --- Initialize auth from sessionStorage
   useEffect(() => {
     const auth = sessionStorage.getItem(SESSION_KEY);
     const expiry = sessionStorage.getItem(EXPIRY_KEY);
@@ -27,7 +27,6 @@ export default function AdminGate({ children }) {
     if (auth === "true" && expiry && now < Number(expiry)) {
       setIsAuthorized(true);
     } else {
-      // cleanup any stale values
       sessionStorage.removeItem(SESSION_KEY);
       sessionStorage.removeItem(EXPIRY_KEY);
       setIsAuthorized(false);
@@ -39,7 +38,6 @@ export default function AdminGate({ children }) {
     const lastPath = sessionStorage.getItem(LAST_PATH_KEY) || "";
     const current = location.pathname || "/";
 
-    // If last path was inside admin and current is not -> revoke
     if (lastPath.startsWith("/admin") && !current.startsWith("/admin")) {
       sessionStorage.removeItem(SESSION_KEY);
       sessionStorage.removeItem(EXPIRY_KEY);
@@ -49,25 +47,24 @@ export default function AdminGate({ children }) {
     sessionStorage.setItem(LAST_PATH_KEY, current);
   }, [location.pathname]);
 
-  // --- Active expiry check (runs every second) to auto logout when expiry reached
+  // --- Active expiry check using setTimeout
   useEffect(() => {
-    const interval = setInterval(() => {
-      const expiry = sessionStorage.getItem(EXPIRY_KEY);
-      if (!expiry) return;
-      if (Date.now() > Number(expiry)) {
-        // session expired
-        sessionStorage.removeItem(SESSION_KEY);
-        sessionStorage.removeItem(EXPIRY_KEY);
-        if (authRef.current) {
-          setIsAuthorized(false);
-          // navigate away to POS or root so admin UI hides
-          navigate("/");
-        }
-      }
-    }, 1000);
+    if (!isAuthorized) return;
 
-    return () => clearInterval(interval);
-  }, [navigate]);
+    const expiry = sessionStorage.getItem(EXPIRY_KEY);
+    if (!expiry) return;
+
+    const timeout = setTimeout(() => {
+      sessionStorage.removeItem(SESSION_KEY);
+      sessionStorage.removeItem(EXPIRY_KEY);
+      if (authRef.current) {
+        setIsAuthorized(false);
+        navigate("/"); // redirect away when expired
+      }
+    }, Number(expiry) - Date.now());
+
+    return () => clearTimeout(timeout);
+  }, [isAuthorized, navigate]);
 
   // --- Activity listeners to extend expiry while authorized
   useEffect(() => {
@@ -78,13 +75,11 @@ export default function AdminGate({ children }) {
       sessionStorage.setItem(EXPIRY_KEY, String(newExpiry));
     };
 
-    // Add events
     window.addEventListener("mousemove", extendExpiry);
     window.addEventListener("click", extendExpiry);
     window.addEventListener("keydown", extendExpiry);
 
-    // set initial extended expiry
-    extendExpiry();
+    extendExpiry(); // set initial expiry
 
     return () => {
       window.removeEventListener("mousemove", extendExpiry);
@@ -108,10 +103,11 @@ export default function AdminGate({ children }) {
       const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(mode === "set" ? { newPassword: password } : { password }),
+        body: JSON.stringify(
+          mode === "set" ? { newPassword: password } : { password }
+        ),
       });
 
-      // parse JSON safely
       let data = null;
       try {
         data = await res.json();
@@ -120,19 +116,17 @@ export default function AdminGate({ children }) {
       }
 
       if (res.ok) {
-        // success: set session and redirect to /admin (no success alert)
         const expiry = Date.now() + SESSION_LENGTH_MS;
         sessionStorage.setItem(SESSION_KEY, "true");
         sessionStorage.setItem(EXPIRY_KEY, String(expiry));
         setIsAuthorized(true);
         setPassword("");
-        // If already on admin page, no navigation necessary; otherwise go to admin.
         if (!location.pathname.startsWith("/admin")) {
           navigate("/admin");
         }
       } else {
-        // failure: show the error (from backend if present) — do not show success alert on correct pw
-        const msg = (data && (data.error || data.message)) || "Invalid password";
+        const msg =
+          (data && (data.error || data.message)) || "Invalid password";
         alert(msg);
       }
     } catch (err) {
@@ -144,13 +138,13 @@ export default function AdminGate({ children }) {
     }
   };
 
-  // Show modal only when user is trying to access admin area and not authorized
+  // --- Show modal only when accessing /admin and not authorized
   if (location.pathname.startsWith("/admin") && !isAuthorized) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-black/70 z-50">
+      <div className="fixed inset-0 flex items-center justify-center bg-black z-50">
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col bg-gray-800/90 border border-gray-700 p-6 rounded-lg shadow-lg w-80"
+          className="flex flex-col bg-gray-800 border border-gray-700 p-6 rounded-lg shadow-lg w-80"
         >
           <h2 className="text-amber-400 text-xl font-bold mb-4 text-center">
             {mode === "login" ? "Admin Login" : "Set Admin Password"}
@@ -161,7 +155,7 @@ export default function AdminGate({ children }) {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter password"
-            className="mb-4 p-2 rounded border border-gray-700 bg-gray-900/80 text-gray-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+            className="mb-4 p-2 rounded border border-gray-700 bg-gray-900 text-gray-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
             autoFocus
           />
 
@@ -170,7 +164,11 @@ export default function AdminGate({ children }) {
             disabled={loading}
             className="bg-amber-500 text-black p-2 rounded font-semibold hover:bg-amber-600 transition"
           >
-            {loading ? "Please wait..." : mode === "login" ? "Login" : "Set Password"}
+            {loading
+              ? "Please wait..."
+              : mode === "login"
+              ? "Login"
+              : "Set Password"}
           </button>
 
           <button
@@ -185,5 +183,5 @@ export default function AdminGate({ children }) {
     );
   }
 
-  return children();
+  return children;
 }
