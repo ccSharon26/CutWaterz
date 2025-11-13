@@ -12,7 +12,7 @@ export function register() {
           registration.onupdatefound = () => {
             const newWorker = registration.installing;
             if (newWorker) {
-              newWorker.onstatechange = () => {``
+              newWorker.onstatechange = () => {
                 if (
                   newWorker.state === "installed" &&
                   navigator.serviceWorker.controller
