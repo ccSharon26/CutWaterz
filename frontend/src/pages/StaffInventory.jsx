@@ -5,7 +5,7 @@ const BASE_URL = CONFIG.BASE_URL;
 
 export default function StaffInventory() {
   const [products, setProducts] = useState([]);
-  const [allProducts, setAllProducts] = useState([]); // original copy to reset search
+  const [allProducts, setAllProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
@@ -98,7 +98,7 @@ export default function StaffInventory() {
 
   return (
     <div className="min-h-screen pt-20 px-4 sm:px-6">
-      <h2 className="text-2xl font-bold text-white-500 mb-6">👷 Staff Inventory</h2>
+      <h2 className="text-2xl font-bold text-white-500 mb-6"> Staff Dashboard</h2>
 
       {/* 🔍 Search Bar (mobile + desktop) */}
       <div className="mb-4">
